@@ -49,6 +49,7 @@ public class BigimgActivity extends SwipeBackBaseActivity implements BigimgContr
         setSupportActionBar(toolbarBigImg);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         toolbarBigImg.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
