@@ -1,7 +1,5 @@
 package me.bakumon.ugank.module.search;
 
-import android.content.pm.ActivityInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -31,10 +29,8 @@ import me.bakumon.ugank.R;
 import me.bakumon.ugank.base.SwipeBackBaseActivity;
 import me.bakumon.ugank.entity.History;
 import me.bakumon.ugank.entity.SearchResult;
-import me.bakumon.ugank.utills.DisplayUtils;
 import me.bakumon.ugank.utills.KeyboardUtils;
 import me.bakumon.ugank.utills.MDTintUtil;
-import me.bakumon.ugank.utills.StatusBarUtil;
 import me.bakumon.ugank.widget.RecycleViewDivider;
 import me.bakumon.ugank.widget.recyclerviewwithfooter.OnLoadMoreListener;
 import me.bakumon.ugank.widget.recyclerviewwithfooter.RecyclerViewWithFooter;
@@ -70,7 +66,6 @@ public class SearchActivity extends SwipeBackBaseActivity implements SearchContr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
         initView();
@@ -80,8 +75,6 @@ public class SearchActivity extends SwipeBackBaseActivity implements SearchContr
 
     private void initView() {
 
-        StatusBarUtil.immersive(this);
-        StatusBarUtil.setPaddingSmart(this, mToolbarSearch);
         setSupportActionBar(mToolbarSearch);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -127,6 +120,11 @@ public class SearchActivity extends SwipeBackBaseActivity implements SearchContr
         mEmojiRainLayout.addEmoji(R.mipmap.emoji5);
         mEmojiRainLayout.addEmoji(R.mipmap.emoji6);
 
+    }
+
+    @Override
+    protected View[] setImmersiveView() {
+        return new View[]{mToolbarSearch};
     }
 
     @Override

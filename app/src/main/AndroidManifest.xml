@@ -23,10 +23,12 @@
             </intent-filter>
             <meta-data
                 android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts"/>
+                android:resource="@xml/shortcuts" />
         </activity>
         <!-- 主页 -->
-        <activity android:name=".module.home.HomeActivity" />
+        <activity
+            android:name=".module.home.HomeActivity"
+            android:screenOrientation="portrait" />
         <!-- WebView -->
         <activity
             android:name=".module.webview.WebViewActivity"

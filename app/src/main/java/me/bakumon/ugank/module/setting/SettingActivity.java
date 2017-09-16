@@ -66,11 +66,8 @@ public class SettingActivity extends SwipeBackBaseActivity implements SettingCon
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_setting);
         ButterKnife.bind(this);
-        StatusBarUtil.immersive(this);
-        StatusBarUtil.setPaddingSmart(this, mAppbarSetting);
         setSupportActionBar(mToolbarSetting);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -85,6 +82,11 @@ public class SettingActivity extends SwipeBackBaseActivity implements SettingCon
         mSwitchSettingShowLauncherImg.setOnCheckedChangeListener(this);
         mSwitchSettingAlwaysShowLauncherImg.setOnCheckedChangeListener(this);
         mSettingPresenter.subscribe();
+    }
+
+    @Override
+    protected View[] setImmersiveView() {
+        return new View[]{mAppbarSetting};
     }
 
     @Override

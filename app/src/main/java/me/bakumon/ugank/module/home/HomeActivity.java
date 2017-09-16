@@ -50,7 +50,6 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home);
         ButterKnife.bind(this);
         initView();
@@ -64,10 +63,8 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
     }
 
     private void initView() {
-        StatusBarUtil.immersive(this);
-        StatusBarUtil.setPaddingSmart(this, binding.ivHomeBanner);
-        StatusBarUtil.setPaddingSmart(this, binding.tlHomeToolbar);
 
+        setStatusBar();
         setFabDynamicState();
 
         String[] titles = {
@@ -102,6 +99,15 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
         binding.vpHomeCategory.setAdapter(infoPagerAdapter);
         binding.tabHomeCategory.setupWithViewPager(binding.vpHomeCategory);
         binding.vpHomeCategory.setCurrentItem(1);
+    }
+
+    /**
+     * 沉浸式
+     */
+    private void setStatusBar() {
+        StatusBarUtil.immersive(this);
+        StatusBarUtil.setPaddingSmart(this, binding.ivHomeBanner);
+        StatusBarUtil.setPaddingSmart(this, binding.tlHomeToolbar);
     }
 
     /**

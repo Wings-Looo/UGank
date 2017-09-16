@@ -55,11 +55,8 @@ public class WebViewActivity extends SwipeBackBaseActivity implements WebViewCon
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_web_view);
         ButterKnife.bind(this);
-        StatusBarUtil.immersive(this);
-        StatusBarUtil.setPaddingSmart(this, mToolbar);
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -72,6 +69,11 @@ public class WebViewActivity extends SwipeBackBaseActivity implements WebViewCon
         });
         initWebView();
         mWebViewPresenter.subscribe();
+    }
+
+    @Override
+    protected View[] setImmersiveView() {
+        return new View[]{mToolbar};
     }
 
     public void initWebView() {

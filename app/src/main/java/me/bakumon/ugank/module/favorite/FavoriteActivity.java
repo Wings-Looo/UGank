@@ -1,11 +1,8 @@
 package me.bakumon.ugank.module.favorite;
 
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -18,8 +15,6 @@ import es.dmoral.toasty.Toasty;
 import me.bakumon.ugank.R;
 import me.bakumon.ugank.base.SwipeBackBaseActivity;
 import me.bakumon.ugank.entity.Favorite;
-import me.bakumon.ugank.utills.DisplayUtils;
-import me.bakumon.ugank.utills.StatusBarUtil;
 import me.bakumon.ugank.widget.RecycleViewDivider;
 import me.bakumon.ugank.widget.recyclerviewwithfooter.OnLoadMoreListener;
 import me.bakumon.ugank.widget.recyclerviewwithfooter.RecyclerViewWithFooter;
@@ -42,17 +37,19 @@ public class FavoriteActivity extends SwipeBackBaseActivity implements FavoriteC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_favorite);
         ButterKnife.bind(this);
-        StatusBarUtil.immersive(this);
-        StatusBarUtil.setPaddingSmart(this, mToolbarFavorite);
         setSupportActionBar(mToolbarFavorite);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         initView();
         mPresenter.subscribe();
+    }
+
+    @Override
+    protected View[] setImmersiveView() {
+        return new View[]{mToolbarFavorite};
     }
 
     @Override

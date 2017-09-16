@@ -1,11 +1,14 @@
 package me.bakumon.ugank.base;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import cn.bingoogolapple.swipebacklayout.BGASwipeBackHelper;
 import me.bakumon.ugank.R;
+import me.bakumon.ugank.utills.StatusBarUtil;
 
 /**
  * 滑动返回 Base 类
@@ -22,6 +25,38 @@ public abstract class SwipeBackBaseActivity extends AppCompatActivity implements
         // 在 super.onCreate(savedInstanceState) 之前调用该方法
         initSwipeBackFinish();
         super.onCreate(savedInstanceState);
+    }
+
+    /**
+     * 设置沉浸式状态栏
+     */
+    private void setImmersiveStatus() {
+        View[] views = setImmersiveView();
+        if (views == null || views.length < 1) {
+            return;
+        }
+        StatusBarUtil.immersive(this);
+        for (View view : views) {
+            StatusBarUtil.setPaddingSmart(this, view);
+        }
+    }
+
+    /**
+     * 子类重写该方法设置沉浸式状态栏
+     *
+     * @return null 或 view[]大小为0,则不启用沉浸式
+     */
+    protected abstract View[] setImmersiveView();
+
+    private boolean isSetupImmersive; // 是否设置已经设置了沉浸式状态栏
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!isSetupImmersive) {
+            setImmersiveStatus();
+            isSetupImmersive = true;
+        }
     }
 
     /**

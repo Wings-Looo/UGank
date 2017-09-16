@@ -1,57 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                 xmlns:tools="http://schemas.android.com/tools"
-                                                 android:layout_width="match_parent"
-                                                 android:layout_height="match_parent"
-                                                 android:background="@color/colorActivityBackground"
-                                                 android:orientation="vertical"
-                                                 tools:context="me.bakumon.ugank.module.bigimg.BigimgActivity">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="me.bakumon.ugank.module.bigimg.BigimgActivity">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar_big_img"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="bottom">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_big_img"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/transparent"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-            <TextView
-                android:id="@+id/tv_title_big_img"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                tools:text="这是标题"/>
-        </android.support.v7.widget.Toolbar>
-
-    </android.support.design.widget.AppBarLayout>
-
-    <me.bakumon.ugank.widget.SquareLoading
-        android:id="@+id/sl_big_img_loading"
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorActivityBackground"
-        app:dividerSize="2dp"
-        app:squareColor="@color/colorPrimary"
-        app:squareCorner="2dp"
-        app:squareSize="12dp"
-        app:xCount="4"
-        app:yCount="3"/>
+        android:orientation="vertical">
 
-    <me.bakumon.ugank.widget.PinchImageView
-        android:id="@+id/img_big"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar_big_img"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom">
 
-</android.support.design.widget.CoordinatorLayout>
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_big_img"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/transparent"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+                <TextView
+                    android:id="@+id/tv_title_big_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp"
+                    tools:text="这是标题" />
+            </android.support.v7.widget.Toolbar>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <me.bakumon.ugank.widget.SquareLoading
+            android:id="@+id/sl_big_img_loading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorActivityBackground"
+            app:dividerSize="2dp"
+            app:squareColor="@color/colorPrimary"
+            app:squareCorner="2dp"
+            app:squareSize="12dp"
+            app:xCount="4"
+            app:yCount="3" />
+
+        <com.bm.library.PhotoView
+            android:id="@+id/img_big"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    </android.support.design.widget.CoordinatorLayout>
+</layout>
