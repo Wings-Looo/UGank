@@ -93,7 +93,7 @@ public class AboutDialog extends BaseDialog {
 
     @OnClick(R.id.tv_author_github)
     public void github() {
-        viewIntent("https://github.com/Bakumon/");
+        viewIntent("https://github.com/Bakumon");
     }
 
     @OnClick(R.id.tv_author_weibo)
