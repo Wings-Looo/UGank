@@ -217,4 +217,12 @@ public class WebViewActivity extends SwipeBackBaseActivity implements WebViewCon
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mWebView != null) {
+            mWebView.destroy();
+            mWebView = null;
+        }
+    }
 }
