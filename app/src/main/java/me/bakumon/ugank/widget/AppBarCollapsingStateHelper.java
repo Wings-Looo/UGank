@@ -1,4 +1,4 @@
-package me.bakumon.ugank.module.home;
+package me.bakumon.ugank.widget;
 
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;

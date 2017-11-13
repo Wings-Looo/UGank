@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import com.github.florent37.picassopalette.PicassoPalette;
@@ -29,12 +30,15 @@ import me.bakumon.ugank.module.search.SearchActivity;
 import me.bakumon.ugank.module.setting.SettingActivity;
 import me.bakumon.ugank.utills.MDTintUtil;
 import me.bakumon.ugank.utills.StatusBarUtil;
+import me.bakumon.ugank.widget.AppBarCollapsingStateHelper;
 
 /**
  * HomeActivity
  * Created by bakumon on 2016/12/8 16:42.
  */
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private static final String TAG = HomeActivity.class.getSimpleName();
 
     private ActivityHomeBinding binding;
 
@@ -139,14 +143,16 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      * @param isRandom 是否随机
      */
     private void getBanner(boolean isRandom) {
-        binding.fabHomeRandom.startLoadingAnim();
+        // fab 开始加载中动画
+        binding.setIsLoading(true);
         if (homeViewModel == null) {
             homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         }
         homeViewModel.getBannerUrl(isRandom).observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String imgUrl) {
-                binding.fabHomeRandom.stopLoadingAnim();
+                // TODO: 2017/11/14 这里会走两遍
+                Log.e(TAG, "onChanged: imgUrl=" + imgUrl);
                 if (TextUtils.isEmpty(imgUrl)) {
                     Toasty.error(HomeActivity.this, "图加载失败").show();
                     return;
@@ -168,6 +174,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                                 binding.appbar.setBackgroundColor(themeColor);
                                 // 设置 FabButton 的背景色
                                 MDTintUtil.setTint(binding.fabHomeRandom, themeColor);
+                                // fab 停止加载中动画
+                                binding.setIsLoading(false);
+                                Log.e(TAG, "onPaletteLoaded: ");
                             }
                         }));
             }
