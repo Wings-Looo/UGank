@@ -12,11 +12,12 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.github.florent37.picassopalette.PicassoPalette;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
 import me.bakumon.ugank.App;
+import me.bakumon.ugank.ConfigManage;
 import me.bakumon.ugank.GlobalConfig;
 import me.bakumon.ugank.R;
 import me.bakumon.ugank.ThemeManage;
@@ -33,7 +34,7 @@ import me.bakumon.ugank.utills.StatusBarUtil;
  * HomeActivity
  * Created by bakumon on 2016/12/8 16:42.
  */
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ActivityHomeBinding binding;
 
@@ -46,6 +47,8 @@ public class HomeActivity extends AppCompatActivity {
     private CategoryFragment referenceFragment;
     private CategoryFragment resFragment;
 
+    private HomeViewModel homeViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,20 +57,16 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void initView() {
-
         setStatusBar();
         setFabDynamicState();
         setupFragment();
+        binding.fabHomeRandom.setOnClickListener(this);
+        binding.ivHomeSetting.setOnClickListener(this);
+        binding.ivHomeCollection.setOnClickListener(this);
+        binding.llHomeSearch.setOnClickListener(this);
 
         getBanner(false);
-
-        binding.fabHomeRandom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getBanner(true);
-            }
-        });
-
+        cacheLauncherImg();
     }
 
     /**
@@ -134,9 +133,16 @@ public class HomeActivity extends AppCompatActivity {
         binding.vpHomeCategory.setCurrentItem(1);
     }
 
+    /**
+     * 观察 Banner Url 数据变化
+     *
+     * @param isRandom 是否随机
+     */
     private void getBanner(boolean isRandom) {
         binding.fabHomeRandom.startLoadingAnim();
-        HomeViewModel homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
+        if (homeViewModel == null) {
+            homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
+        }
         homeViewModel.getBannerUrl(isRandom).observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String imgUrl) {
@@ -150,81 +156,68 @@ public class HomeActivity extends AppCompatActivity {
                         .into(binding.ivHomeBanner, PicassoPalette.with(imgUrl, binding.ivHomeBanner).intoCallBack(new PicassoPalette.CallBack() {
                             @Override
                             public void onPaletteLoaded(Palette palette) {
-                                setTheme(palette);
+                                if (palette == null) {
+                                    return;
+                                }
+                                int defaultColor = App.getInstance().getResources().getColor(R.color.colorPrimary);
+                                // 把从调色板上获取的主题色保存在内存中
+                                ThemeManage.INSTANCE.setColorPrimary(palette.getDarkVibrantColor(defaultColor));
+                                int themeColor = ThemeManage.INSTANCE.getColorPrimary();
+                                // 设置 AppBarLayout 的背景色
+                                binding.collapsingToolbar.setContentScrimColor(themeColor);
+                                binding.appbar.setBackgroundColor(themeColor);
+                                // 设置 FabButton 的背景色
+                                MDTintUtil.setTint(binding.fabHomeRandom, themeColor);
                             }
                         }));
             }
         });
     }
 
-    @OnClick(R.id.ll_home_search)
-    public void search(View view) {
-        startActivity(new Intent(HomeActivity.this, SearchActivity.class));
-    }
-
-    //    @Override
-//    public void showBannerFail(String failMessage) {
-//        Toasty.error(this, failMessage).show();
-//    }
-//
-//    @Override
-//    public void setBanner(String imgUrl) {
-//        Picasso.with(this).load(imgUrl)
-//                .into(binding.ivHomeBanner,
-//                        PicassoPalette.with(imgUrl, binding.ivHomeBanner)
-//                                .intoCallBack(new PicassoPalette.CallBack() {
-//                                    @Override
-//                                    public void onPaletteLoaded(Palette palette) {
-//                                        mHomePresenter.setThemeColor(palette);
-//                                    }
-//                                }));
-//    }
-//
-//    @Override
-//    public void cacheImg(final String imgUrl) {
-//        // 预加载 提前缓存好的欢迎图
-//        Picasso.with(this).load(imgUrl).fetch(new Callback() {
-//            @Override
-//            public void onSuccess() {
-//                mHomePresenter.saveCacheImgUrl(imgUrl);
-//            }
-//
-//            @Override
-//            public void onError() {
-//
-//            }
-//        });
-//    }
-//
-
     /**
-     * 设置主题色
-     *
-     * @param palette 从 Banner 中获取的调色板
+     * 观察 预缓存加载页图片 Url 数据变化
      */
-    private void setTheme(Palette palette) {
-        if (palette == null) {
-            return;
+    private void cacheLauncherImg() {
+        if (homeViewModel == null) {
+            homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         }
-        int defaultColor = App.getInstance().getResources().getColor(R.color.colorPrimary);
-        // 把从调色板上获取的主题色保存在内存中
-        ThemeManage.INSTANCE.setColorPrimary(palette.getDarkVibrantColor(defaultColor));
-        int themeColor = ThemeManage.INSTANCE.getColorPrimary();
-        // 设置 AppBarLayout 的背景色
-        binding.collapsingToolbar.setContentScrimColor(themeColor);
-        binding.appbar.setBackgroundColor(themeColor);
-        // 设置 FabButton 的背景色
-        MDTintUtil.setTint(binding.fabHomeRandom, themeColor);
+        homeViewModel.getCacheUrl().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable final String cacheUrl) {
+                if (!TextUtils.isEmpty(cacheUrl)) {
+                    // 预加载 提前缓存好的欢迎图
+                    Picasso.with(HomeActivity.this).load(cacheUrl).fetch(new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            ConfigManage.INSTANCE.setBannerURL(cacheUrl);
+                        }
+
+                        @Override
+                        public void onError() {
+
+                        }
+                    });
+                }
+            }
+        });
     }
 
-    @OnClick(R.id.iv_home_collection)
-    public void collection() {
-        startActivity(new Intent(HomeActivity.this, FavoriteActivity.class));
-    }
-
-    @OnClick(R.id.iv_home_setting)
-    public void goSetting() {
-        startActivityForResult(new Intent(HomeActivity.this, SettingActivity.class), SETTING_REQUEST_CODE);
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.fab_home_random:
+                getBanner(true);
+                break;
+            case R.id.iv_home_collection:
+                startActivity(new Intent(HomeActivity.this, FavoriteActivity.class));
+                break;
+            case R.id.iv_home_setting:
+                startActivityForResult(new Intent(HomeActivity.this, SettingActivity.class), SETTING_REQUEST_CODE);
+                break;
+            case R.id.ll_home_search:
+                startActivity(new Intent(HomeActivity.this, SearchActivity.class));
+                break;
+        }
     }
 
     @Override

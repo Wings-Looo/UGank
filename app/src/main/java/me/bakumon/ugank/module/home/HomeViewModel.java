@@ -19,7 +19,7 @@ import rx.subscriptions.CompositeSubscription;
 
 public class HomeViewModel extends ViewModel {
     /**
-     *
+     * RxJava 的订阅者集合
      */
     private CompositeSubscription mSubscriptions;
     /**
