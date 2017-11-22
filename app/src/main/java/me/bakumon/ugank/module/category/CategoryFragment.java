@@ -2,6 +2,7 @@ package me.bakumon.ugank.module.category;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,16 +15,14 @@ import android.view.ViewGroup;
 
 import com.squareup.picasso.Picasso;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 import me.bakumon.ugank.GlobalConfig;
 import me.bakumon.ugank.R;
+import me.bakumon.ugank.databinding.FragmentBinding;
 import me.bakumon.ugank.entity.CategoryResult;
 import me.bakumon.ugank.module.home.HomeActivity;
 import me.bakumon.ugank.widget.RecycleViewDivider;
 import me.bakumon.ugank.widget.recyclerviewwithfooter.OnLoadMoreListener;
-import me.bakumon.ugank.widget.recyclerviewwithfooter.RecyclerViewWithFooter;
 
 import static android.widget.AbsListView.OnScrollListener.SCROLL_STATE_IDLE;
 
@@ -34,11 +33,8 @@ import static android.widget.AbsListView.OnScrollListener.SCROLL_STATE_IDLE;
 public class CategoryFragment extends Fragment implements CategoryContract.View, SwipeRefreshLayout.OnRefreshListener, OnLoadMoreListener {
 
     public static final String CATEGORY_NAME = "me.bakumon.ugank.module.category.CATEGORY_NAME";
-
-    @BindView(R.id.recycler_view)
-    RecyclerViewWithFooter mRecyclerView;
-    @BindView(R.id.swipe_refresh_layout)
-    SwipeRefreshLayout mSwipeRefreshLayout;
+    
+    private FragmentBinding binding;
 
     private CategoryListAdapter mCategoryListAdapter;
     private CategoryContract.Presenter mPresenter = new CategoryPresenter(this);
@@ -63,26 +59,25 @@ public class CategoryFragment extends Fragment implements CategoryContract.View,
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment, container, false);
-        ButterKnife.bind(this, view);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment, container, false);
 
-        mSwipeRefreshLayout.setColorSchemeResources(
+        binding.swipeRefreshLayout.setColorSchemeResources(
                 R.color.colorSwipeRefresh1,
                 R.color.colorSwipeRefresh2,
                 R.color.colorSwipeRefresh3,
                 R.color.colorSwipeRefresh4,
                 R.color.colorSwipeRefresh5,
                 R.color.colorSwipeRefresh6);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
+        binding.swipeRefreshLayout.setOnRefreshListener(this);
 
         mCategoryListAdapter = new CategoryListAdapter(getContext());
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.addItemDecoration(new RecycleViewDivider(getActivity(), LinearLayoutManager.HORIZONTAL));
-        mRecyclerView.setAdapter(mCategoryListAdapter);
-        mRecyclerView.setOnLoadMoreListener(this);
-        mRecyclerView.setEmpty();
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        binding.recyclerView.addItemDecoration(new RecycleViewDivider(getActivity(), LinearLayoutManager.HORIZONTAL));
+        binding.recyclerView.setAdapter(mCategoryListAdapter);
+        binding.recyclerView.setOnLoadMoreListener(this);
+        binding.recyclerView.setEmpty();
+        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 final Picasso picasso = Picasso.with(CategoryFragment.this.getContext());
@@ -94,7 +89,7 @@ public class CategoryFragment extends Fragment implements CategoryContract.View,
                 }
             }
         });
-        return view;
+        return binding.getRoot();
     }
 
     @Override
@@ -127,12 +122,12 @@ public class CategoryFragment extends Fragment implements CategoryContract.View,
 
     @Override
     public void showSwipeLoading() {
-        mSwipeRefreshLayout.setRefreshing(true);
+        binding.swipeRefreshLayout.setRefreshing(true);
     }
 
     @Override
     public void hideSwipeLoading() {
-        mSwipeRefreshLayout.setRefreshing(false);
+        binding.swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -147,7 +142,7 @@ public class CategoryFragment extends Fragment implements CategoryContract.View,
 
     @Override
     public void setLoading() {
-        mRecyclerView.setLoading();
+        binding.recyclerView.setLoading();
     }
 
     @Override
