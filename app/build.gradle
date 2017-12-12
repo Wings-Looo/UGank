@@ -18,9 +18,9 @@ android {
     signingConfigs {
         release {
             storeFile file("ugank.jks")
-            storePassword '973876084mafei'
-            keyAlias 'bakumon'
-            keyPassword '973876084mafei'
+            storePassword ''
+            keyAlias ''
+            keyPassword ''
         }
     }
     buildTypes {
