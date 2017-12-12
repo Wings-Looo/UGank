@@ -13,16 +13,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 import me.bakumon.ugank.GlobalConfig;
 import me.bakumon.ugank.R;
 import me.bakumon.ugank.databinding.FragmentBinding;
 import me.bakumon.ugank.entity.CategoryResult;
+import me.bakumon.ugank.entity.Favorite;
 import me.bakumon.ugank.module.home.HomeActivity;
+import me.bakumon.ugank.module.webview.WebViewActivity;
 import me.bakumon.ugank.widget.RecycleViewDivider;
-import me.bakumon.ugank.widget.recyclerviewwithfooter.OnLoadMoreListener;
 
 import static android.widget.AbsListView.OnScrollListener.SCROLL_STATE_IDLE;
 
@@ -30,10 +34,10 @@ import static android.widget.AbsListView.OnScrollListener.SCROLL_STATE_IDLE;
  * CategoryFragment
  * Created by bakumon on 2016/12/8.
  */
-public class CategoryFragment extends Fragment implements CategoryContract.View, SwipeRefreshLayout.OnRefreshListener, OnLoadMoreListener {
+public class CategoryFragment extends Fragment implements CategoryContract.View, SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.RequestLoadMoreListener, BaseQuickAdapter.OnItemChildClickListener {
 
     public static final String CATEGORY_NAME = "me.bakumon.ugank.module.category.CATEGORY_NAME";
-    
+
     private FragmentBinding binding;
 
     private CategoryListAdapter mCategoryListAdapter;
@@ -70,13 +74,14 @@ public class CategoryFragment extends Fragment implements CategoryContract.View,
                 R.color.colorSwipeRefresh6);
         binding.swipeRefreshLayout.setOnRefreshListener(this);
 
-        mCategoryListAdapter = new CategoryListAdapter(getContext());
+        mCategoryListAdapter = new CategoryListAdapter(null);
 
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         binding.recyclerView.addItemDecoration(new RecycleViewDivider(getActivity(), LinearLayoutManager.HORIZONTAL));
         binding.recyclerView.setAdapter(mCategoryListAdapter);
-        binding.recyclerView.setOnLoadMoreListener(this);
-        binding.recyclerView.setEmpty();
+        mCategoryListAdapter.setOnItemChildClickListener(this);
+        mCategoryListAdapter.setOnLoadMoreListener(this, binding.recyclerView);
+
         binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -136,13 +141,8 @@ public class CategoryFragment extends Fragment implements CategoryContract.View,
     }
 
     @Override
-    public void onLoadMore() {
-        mPresenter.getCategoryItems(false);
-    }
-
-    @Override
     public void setLoading() {
-        binding.recyclerView.setLoading();
+//        binding.recyclerView.setLoading();
     }
 
     @Override
@@ -154,15 +154,46 @@ public class CategoryFragment extends Fragment implements CategoryContract.View,
 
     @Override
     public void setCategoryItems(CategoryResult categoryResult) {
-        mCategoryListAdapter.mData = categoryResult.results;
-        mCategoryListAdapter.notifyDataSetChanged();
+        mCategoryListAdapter.setNewData(categoryResult.results);
+//        mCategoryListAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void addCategoryItems(CategoryResult categoryResult) {
         int start = mCategoryListAdapter.getItemCount();
-        mCategoryListAdapter.mData.addAll(categoryResult.results);
-        mCategoryListAdapter.notifyItemRangeInserted(start, categoryResult.results.size());
+        mCategoryListAdapter.addData(categoryResult.results);
+//        mCategoryListAdapter.notifyItemRangeInserted(start, categoryResult.results.size());
     }
 
+    @Override
+    public void onLoadMoreRequested() {
+        mPresenter.getCategoryItems(false);
+    }
+
+    @Override
+    public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+        switch (view.getId()) {
+            case R.id.ll_item:
+                List<CategoryResult.ResultsBean> beans = mCategoryListAdapter.getData();
+                if (mCategoryListAdapter.getData().get(position) == null) {
+                    Toasty.error(getContext(), "数据异常").show();
+                    return;
+                }
+                Intent intent = new Intent(getContext(), WebViewActivity.class);
+                intent.putExtra(WebViewActivity.GANK_TITLE, beans.get(position).desc);
+                intent.putExtra(WebViewActivity.GANK_URL, beans.get(position).url);
+                Favorite favorite = new Favorite();
+                favorite.setAuthor(beans.get(position).who);
+                favorite.setData(beans.get(position).publishedAt);
+                favorite.setTitle(beans.get(position).desc);
+                favorite.setType(beans.get(position).type);
+                favorite.setUrl(beans.get(position).url);
+                favorite.setGankID(beans.get(position)._id);
+                intent.putExtra(WebViewActivity.FAVORITE_DATA, favorite);
+                startActivity(intent);
+                break;
+            default:
+                break;
+        }
+    }
 }

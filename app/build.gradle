@@ -18,9 +18,9 @@ android {
     signingConfigs {
         release {
             storeFile file("ugank.jks")
-            storePassword System.getenv("KEYSTORE_PASS")
-            keyAlias System.getenv("ALIAS_NAME")
-            keyPassword System.getenv("ALIAS_PASS")
+            storePassword '973876084mafei'
+            keyAlias 'bakumon'
+            keyPassword '973876084mafei'
         }
     }
     buildTypes {
@@ -80,4 +80,6 @@ dependencies {
     compile "android.arch.lifecycle:runtime:1.0.3"
     annotationProcessor "android.arch.lifecycle:compiler:1.0.0"
     compile "android.arch.lifecycle:extensions:1.0.0"
+
+    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.34'
 }

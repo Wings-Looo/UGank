@@ -61,7 +61,7 @@ public class LoadingFloatingActionButton extends FloatingActionButton {
     }
 
     /**
-     * 设置给 databinding 调用
+     * 提供给 databinding 调用
      * <p>
      * activity_home.xml
      * app:isLoading="@{isLoading}"

@@ -122,7 +122,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         frontFragment = CategoryFragment.newInstance(titles[3]);
         // 瞎推荐
         referenceFragment = CategoryFragment.newInstance(titles[4]);
-        // 拓展资源s
+        // 拓展资源
         resFragment = CategoryFragment.newInstance(titles[5]);
 
         infoPagerAdapter.addFragment(appFragment);
@@ -151,7 +151,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         homeViewModel.getBannerUrl(isRandom).observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String imgUrl) {
-                // TODO: 2017/11/14 这里会走两遍
                 Log.e(TAG, "onChanged: imgUrl=" + imgUrl);
                 if (TextUtils.isEmpty(imgUrl)) {
                     Toasty.error(HomeActivity.this, "图加载失败").show();
@@ -176,7 +175,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                                 MDTintUtil.setTint(binding.fabHomeRandom, themeColor);
                                 // fab 停止加载中动画
                                 binding.setIsLoading(false);
-                                Log.e(TAG, "onPaletteLoaded: ");
                             }
                         }));
             }
@@ -193,6 +191,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         homeViewModel.getCacheUrl().observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable final String cacheUrl) {
+                Log.e(TAG, "onChanged: cacheUrl=" + cacheUrl);
                 if (!TextUtils.isEmpty(cacheUrl)) {
                     // 预加载 提前缓存好的欢迎图
                     Picasso.with(HomeActivity.this).load(cacheUrl).fetch(new Callback() {

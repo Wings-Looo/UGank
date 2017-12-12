@@ -2,6 +2,7 @@ package me.bakumon.ugank.module.home;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.util.Log;
 
 import me.bakumon.ugank.entity.CategoryResult;
 import me.bakumon.ugank.network.NetWork;
@@ -18,6 +19,7 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 public class HomeViewModel extends ViewModel {
+    private static final String TAG = HomeViewModel.class.getSimpleName();
     /**
      * RxJava 的订阅者集合
      */
@@ -38,9 +40,10 @@ public class HomeViewModel extends ViewModel {
     public MutableLiveData<String> getBannerUrl(boolean isRandom) {
         // ♥♥ 使用 MutableLiveData 或 自定义 LiveData
         // 一般只需要使用 MutableLiveData 就行
-        if (mObservableUrl == null) {
-            mObservableUrl = new MutableLiveData<>();
-        }
+
+        // 这里每次需要创建新的 MutableLiveData 对象，
+        // 否则多次调用，会出现值改变一次 onChanged 被多次调用的问题
+        mObservableUrl = new MutableLiveData<>();
         requestImgUrl(false, isRandom);
         return mObservableUrl;
     }
@@ -94,6 +97,9 @@ public class HomeViewModel extends ViewModel {
                         boolean urlIsNotNull = meiziResult != null
                                 && meiziResult.results != null
                                 && meiziResult.results.get(0) != null;
+                        if (urlIsNotNull) {
+                            Log.e(TAG, "onNext: " + meiziResult);
+                        }
                         if (isCache) {
                             mObservableCacheUrl.setValue(urlIsNotNull ? meiziResult.results.get(0).url : null);
                         } else {
