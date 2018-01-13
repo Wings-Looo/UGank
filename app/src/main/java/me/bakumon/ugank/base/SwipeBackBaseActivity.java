@@ -1,6 +1,5 @@
 package me.bakumon.ugank.base;
 
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -88,7 +87,7 @@ public abstract class SwipeBackBaseActivity extends AppCompatActivity implements
     /**
      * 是否支持滑动返回。这里在父类中默认返回 true 来支持滑动返回，如果某个界面不想支持滑动返回则重写该方法返回 false 即可
      *
-     * @return
+     * @return true：支持，否则不支持
      */
     @Override
     public boolean isSupportSwipeBack() {

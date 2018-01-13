@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -155,14 +156,12 @@ public class CategoryFragment extends Fragment implements CategoryContract.View,
     @Override
     public void setCategoryItems(CategoryResult categoryResult) {
         mCategoryListAdapter.setNewData(categoryResult.results);
-//        mCategoryListAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void addCategoryItems(CategoryResult categoryResult) {
-        int start = mCategoryListAdapter.getItemCount();
         mCategoryListAdapter.addData(categoryResult.results);
-//        mCategoryListAdapter.notifyItemRangeInserted(start, categoryResult.results.size());
+        mCategoryListAdapter.loadMoreComplete();
     }
 
     @Override
