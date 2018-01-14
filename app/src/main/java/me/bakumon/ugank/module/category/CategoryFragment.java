@@ -175,7 +175,7 @@ public class CategoryFragment extends Fragment implements CategoryContract.View,
             case R.id.ll_item:
                 List<CategoryResult.ResultsBean> beans = mCategoryListAdapter.getData();
                 if (mCategoryListAdapter.getData().get(position) == null) {
-                    Toasty.error(getContext(), "数据异常").show();
+                    Toasty.error(getActivity(), "数据异常").show();
                     return;
                 }
                 Intent intent = new Intent(getContext(), WebViewActivity.class);
