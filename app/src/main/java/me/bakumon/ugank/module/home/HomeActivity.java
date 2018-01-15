@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 
 import com.github.florent37.picassopalette.PicassoPalette;
@@ -34,11 +33,11 @@ import me.bakumon.ugank.widget.AppBarCollapsingStateHelper;
 
 /**
  * HomeActivity
- * Created by bakumon on 2016/12/8 16:42.
+ *
+ * @author bakumon https://bakumon.me
+ * @date 2016/12/8 16:42
  */
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
-
-    private static final String TAG = HomeActivity.class.getSimpleName();
+public class HomeActivity extends AppCompatActivity {
 
     private ActivityHomeBinding binding;
 
@@ -64,10 +63,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         setStatusBar();
         setFabDynamicState();
         setupFragment();
-        binding.fabHomeRandom.setOnClickListener(this);
-        binding.ivHomeSetting.setOnClickListener(this);
-        binding.ivHomeCollection.setOnClickListener(this);
-        binding.llHomeSearch.setOnClickListener(this);
 
         getBanner(false);
         cacheLauncherImg();
@@ -151,9 +146,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         homeViewModel.getBannerUrl(isRandom).observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String imgUrl) {
-                Log.e(TAG, "onChanged: imgUrl=" + imgUrl);
                 if (TextUtils.isEmpty(imgUrl)) {
-                    Toasty.error(HomeActivity.this, "图加载失败").show();
+                    Toasty.error(HomeActivity.this, getString(R.string.banner_load_fail)).show();
+                    // fab 停止加载中动画
+                    binding.setIsLoading(false);
                     return;
                 }
                 Picasso.with(HomeActivity.this)
@@ -191,7 +187,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         homeViewModel.getCacheUrl().observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable final String cacheUrl) {
-                Log.e(TAG, "onChanged: cacheUrl=" + cacheUrl);
                 if (!TextUtils.isEmpty(cacheUrl)) {
                     // 预加载 提前缓存好的欢迎图
                     Picasso.with(HomeActivity.this).load(cacheUrl).fetch(new Callback() {
@@ -210,7 +205,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.fab_home_random:
@@ -224,6 +218,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.ll_home_search:
                 startActivity(new Intent(HomeActivity.this, SearchActivity.class));
+                break;
+            default:
                 break;
         }
     }
@@ -249,6 +245,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case 5:
                 resFragment.onActivityResult(requestCode, resultCode, data);
+                break;
+            default:
                 break;
         }
     }

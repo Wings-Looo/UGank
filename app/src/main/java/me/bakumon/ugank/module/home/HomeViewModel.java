@@ -2,7 +2,6 @@ package me.bakumon.ugank.module.home;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
-import android.util.Log;
 
 import me.bakumon.ugank.entity.CategoryResult;
 import me.bakumon.ugank.network.NetWork;
@@ -15,11 +14,12 @@ import rx.subscriptions.CompositeSubscription;
 
 /**
  * 首页 ViewHModel
- * Created by Bakumon on 2017/11/10.
+ *
+ * @author Bakumon https://bakumon.me
+ * @date 2017/11/10
  */
 
 public class HomeViewModel extends ViewModel {
-    private static final String TAG = HomeViewModel.class.getSimpleName();
     /**
      * RxJava 的订阅者集合
      */
@@ -97,9 +97,6 @@ public class HomeViewModel extends ViewModel {
                         boolean urlIsNotNull = meiziResult != null
                                 && meiziResult.results != null
                                 && meiziResult.results.get(0) != null;
-                        if (urlIsNotNull) {
-                            Log.e(TAG, "onNext: " + meiziResult);
-                        }
                         if (isCache) {
                             mObservableCacheUrl.setValue(urlIsNotNull ? meiziResult.results.get(0).url : null);
                         } else {
