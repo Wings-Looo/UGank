@@ -1,8 +1,8 @@
 package me.bakumon.ugank.module.webview;
 
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,7 +13,7 @@ import android.webkit.WebViewClient;
 
 import es.dmoral.toasty.Toasty;
 import me.bakumon.ugank.R;
-import me.bakumon.ugank.base.SwipeBackBaseActivity;
+import me.bakumon.ugank.base.BaseActivity;
 import me.bakumon.ugank.databinding.ActivityWebViewBinding;
 import me.bakumon.ugank.entity.Favorite;
 import me.bakumon.ugank.module.favorite.FavoriteActivity;
@@ -21,7 +21,12 @@ import me.bakumon.ugank.utills.AndroidUtil;
 import me.bakumon.ugank.utills.MDTintUtil;
 import me.bakumon.ugank.widget.ObservableWebView;
 
-public class WebViewActivity extends SwipeBackBaseActivity implements WebViewContract.View, View.OnClickListener {
+/**
+ * web
+ *
+ * @author bakumon https://bakumon.me
+ */
+public class WebViewActivity extends BaseActivity implements WebViewContract.View, View.OnClickListener {
 
     public static final String GANK_URL = "me.bakumon.gank.module.webview.WebViewActivity.gank_url";
     public static final String GANK_TITLE = "me.bakumon.gank.module.webview.WebViewActivity.gank_title";
@@ -31,13 +36,20 @@ public class WebViewActivity extends SwipeBackBaseActivity implements WebViewCon
     private ActivityWebViewBinding binding;
 
     private WebViewContract.Presenter mWebViewPresenter = new WebViewPresenter(this);
-    private boolean isForResult; // 是否回传结果
+    /**
+     * 是否回传结果
+     */
+    private boolean isForResult;
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_web_view);
+    protected int getLayoutId() {
+        return R.layout.activity_web_view;
+    }
 
+    @Override
+    protected void onInit(@Nullable Bundle savedInstanceState) {
+        binding = getDataBinding();
         setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -205,6 +217,8 @@ public class WebViewActivity extends SwipeBackBaseActivity implements WebViewCon
             case R.id.menu_open_with:
                 AndroidUtil.openWithBrowser(this, mWebViewPresenter.getGankUrl());
                 break;
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -214,7 +228,6 @@ public class WebViewActivity extends SwipeBackBaseActivity implements WebViewCon
         super.onDestroy();
         if (binding.webView != null) {
             binding.webView.destroy();
-//            binding.webView = null;
         }
     }
 }

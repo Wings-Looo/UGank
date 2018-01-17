@@ -2,17 +2,12 @@ package me.bakumon.ugank.module.category;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.squareup.picasso.Picasso;
@@ -22,6 +17,7 @@ import java.util.List;
 import es.dmoral.toasty.Toasty;
 import me.bakumon.ugank.GlobalConfig;
 import me.bakumon.ugank.R;
+import me.bakumon.ugank.base.BaseFragment;
 import me.bakumon.ugank.databinding.FragmentBinding;
 import me.bakumon.ugank.entity.CategoryResult;
 import me.bakumon.ugank.entity.Favorite;
@@ -29,28 +25,65 @@ import me.bakumon.ugank.module.home.HomeActivity;
 import me.bakumon.ugank.module.webview.WebViewActivity;
 import me.bakumon.ugank.widget.RecycleViewDivider;
 
-import static android.widget.AbsListView.OnScrollListener.SCROLL_STATE_IDLE;
-
 /**
  * CategoryFragment
- * Created by bakumon on 2016/12/8.
+ *
+ * @author bakumon
+ * @date 2016/12/8
  */
-public class CategoryFragment extends Fragment implements CategoryContract.View, SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.RequestLoadMoreListener, BaseQuickAdapter.OnItemChildClickListener {
+public class CategoryFragment extends BaseFragment implements CategoryContract.View, SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.RequestLoadMoreListener, BaseQuickAdapter.OnItemChildClickListener {
 
-    public static final String CATEGORY_NAME = "me.bakumon.ugank.module.category.CATEGORY_NAME";
+    private static final String CATEGORY_NAME = "me.bakumon.ugank.module.category.CATEGORY_NAME";
 
-    private FragmentBinding binding;
+    private FragmentBinding mBinding;
 
     private CategoryListAdapter mCategoryListAdapter;
     private CategoryContract.Presenter mPresenter = new CategoryPresenter(this);
 
     private String mCategoryName;
 
+    public static CategoryFragment newInstance(String mCategoryName) {
+        CategoryFragment categoryFragment = new CategoryFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(CATEGORY_NAME, mCategoryName);
+        categoryFragment.setArguments(bundle);
+        return categoryFragment;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
-        mCategoryName = bundle.getString(CATEGORY_NAME);
+        if (bundle != null) {
+            mCategoryName = bundle.getString(CATEGORY_NAME);
+        }
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.fragment;
+    }
+
+    @Override
+    protected void onInit(@Nullable Bundle savedInstanceState) {
+        mBinding = getDataBinding();
+        mBinding.swipeRefreshLayout.setColorSchemeResources(
+                R.color.colorSwipeRefresh1,
+                R.color.colorSwipeRefresh2,
+                R.color.colorSwipeRefresh3,
+                R.color.colorSwipeRefresh4,
+                R.color.colorSwipeRefresh5,
+                R.color.colorSwipeRefresh6);
+        mBinding.swipeRefreshLayout.setOnRefreshListener(this);
+
+        mCategoryListAdapter = new CategoryListAdapter(null);
+
+        mBinding.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mBinding.recyclerView.addItemDecoration(new RecycleViewDivider(getActivity(), LinearLayoutManager.HORIZONTAL));
+        mBinding.recyclerView.setAdapter(mCategoryListAdapter);
+        mCategoryListAdapter.setOnItemChildClickListener(this);
+        mCategoryListAdapter.setOnLoadMoreListener(this, mBinding.recyclerView);
+
     }
 
     @Override
@@ -60,46 +93,8 @@ public class CategoryFragment extends Fragment implements CategoryContract.View,
         }
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment, container, false);
-
-        binding.swipeRefreshLayout.setColorSchemeResources(
-                R.color.colorSwipeRefresh1,
-                R.color.colorSwipeRefresh2,
-                R.color.colorSwipeRefresh3,
-                R.color.colorSwipeRefresh4,
-                R.color.colorSwipeRefresh5,
-                R.color.colorSwipeRefresh6);
-        binding.swipeRefreshLayout.setOnRefreshListener(this);
-
-        mCategoryListAdapter = new CategoryListAdapter(null);
-
-        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        binding.recyclerView.addItemDecoration(new RecycleViewDivider(getActivity(), LinearLayoutManager.HORIZONTAL));
-        binding.recyclerView.setAdapter(mCategoryListAdapter);
-        mCategoryListAdapter.setOnItemChildClickListener(this);
-        mCategoryListAdapter.setOnLoadMoreListener(this, binding.recyclerView);
-
-        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                final Picasso picasso = Picasso.with(CategoryFragment.this.getContext());
-
-                if (newState == SCROLL_STATE_IDLE) {
-                    picasso.resumeTag(GlobalConfig.PICASSO_TAG_THUMBNAILS_CATEGORY_LIST_ITEM);
-                } else {
-                    picasso.pauseTag(GlobalConfig.PICASSO_TAG_THUMBNAILS_CATEGORY_LIST_ITEM);
-                }
-            }
-        });
-        return binding.getRoot();
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter.subscribe();
     }
@@ -111,16 +106,6 @@ public class CategoryFragment extends Fragment implements CategoryContract.View,
         mPresenter.unsubscribe();
     }
 
-    public static CategoryFragment newInstance(String mCategoryName) {
-        CategoryFragment categoryFragment = new CategoryFragment();
-
-        Bundle bundle = new Bundle();
-        bundle.putString(CATEGORY_NAME, mCategoryName);
-
-        categoryFragment.setArguments(bundle);
-        return categoryFragment;
-    }
-
     @Override
     public String getCategoryName() {
         return this.mCategoryName;
@@ -128,12 +113,12 @@ public class CategoryFragment extends Fragment implements CategoryContract.View,
 
     @Override
     public void showSwipeLoading() {
-        binding.swipeRefreshLayout.setRefreshing(true);
+        mBinding.swipeRefreshLayout.setRefreshing(true);
     }
 
     @Override
     public void hideSwipeLoading() {
-        binding.swipeRefreshLayout.setRefreshing(false);
+        mBinding.swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -143,13 +128,13 @@ public class CategoryFragment extends Fragment implements CategoryContract.View,
 
     @Override
     public void setLoading() {
-//        binding.recyclerView.setLoading();
+
     }
 
     @Override
     public void getCategoryItemsFail(String failMessage) {
         if (getUserVisibleHint()) {
-            Toasty.error(this.getContext(), failMessage).show();
+            Toasty.error(getActivity(), failMessage).show();
         }
     }
 

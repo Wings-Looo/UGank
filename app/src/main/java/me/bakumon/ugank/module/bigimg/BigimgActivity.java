@@ -1,17 +1,21 @@
 package me.bakumon.ugank.module.bigimg;
 
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import me.bakumon.ugank.R;
-import me.bakumon.ugank.base.SwipeBackBaseActivity;
+import me.bakumon.ugank.base.BaseActivity;
 import me.bakumon.ugank.databinding.ActivityBigimgBinding;
 
-public class BigimgActivity extends SwipeBackBaseActivity implements BigimgContract.View {
+/**
+ * 仔细查看妹子
+ * @author bakumon https://bakumon.me
+ */
+public class BigimgActivity extends BaseActivity implements BigimgContract.View {
 
     public static final String MEIZI_URL = "me.bakumon.gank.module.img.BigimgActivity.meizi_url";
     public static final String MEIZI_TITLE = "me.bakumon.gank.module.img.BigimgActivity.meizi_title";
@@ -21,9 +25,12 @@ public class BigimgActivity extends SwipeBackBaseActivity implements BigimgContr
     private ActivityBigimgBinding binding;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_bigimg);
+    protected int getLayoutId() {
+        return R.layout.activity_bigimg;
+    }
+
+    @Override
+    protected void onInit(@Nullable Bundle savedInstanceState) {
         initView();
         mBigimgPresenter.subscribe();
     }

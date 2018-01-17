@@ -3,6 +3,7 @@ package me.bakumon.ugank.module.favorite;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
@@ -10,13 +11,18 @@ import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 import me.bakumon.ugank.R;
-import me.bakumon.ugank.base.SwipeBackBaseActivity;
+import me.bakumon.ugank.base.BaseActivity;
 import me.bakumon.ugank.databinding.ActivityFavoriteBinding;
 import me.bakumon.ugank.entity.Favorite;
 import me.bakumon.ugank.widget.RecycleViewDivider;
 import me.bakumon.ugank.widget.recyclerviewwithfooter.OnLoadMoreListener;
 
-public class FavoriteActivity extends SwipeBackBaseActivity implements FavoriteContract.View, OnLoadMoreListener {
+/**
+ * 收藏
+ *
+ * @author bakumon https://bakumon
+ */
+public class FavoriteActivity extends BaseActivity implements FavoriteContract.View, OnLoadMoreListener {
 
     public static final int REQUEST_CODE_FAVORITE = 101;
     public static final String FAVORITE_POSITION = "me.bakumon.ugank.module.favorite.FavoriteActivity.favorite_position";
@@ -27,10 +33,13 @@ public class FavoriteActivity extends SwipeBackBaseActivity implements FavoriteC
     private FavoriteListAdapter mAdapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_favorite);
+    protected int getLayoutId() {
+        return R.layout.activity_favorite;
+    }
 
+    @Override
+    protected void onInit(@Nullable Bundle savedInstanceState) {
+        binding = getDataBinding();
         setSupportActionBar(binding.toolbarFavorite);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);

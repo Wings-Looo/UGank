@@ -1,6 +1,9 @@
 package me.bakumon.ugank.base;
 
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -10,21 +13,53 @@ import me.bakumon.ugank.R;
 import me.bakumon.ugank.utills.StatusBarUtil;
 
 /**
- * 滑动返回 Base 类
- * https://github.com/bingoogolapple/BGASwipeBackLayout-Android
- * Created by bakumon on 17-3-5.
+ * 1.沉浸式状态栏
+ * 2.ViewDataBinding 封装
+ * 3.滑动返回
+ *
+ * @author Bakumon
+ * @date 18-1-17
  */
-
-public abstract class SwipeBackBaseActivity extends AppCompatActivity implements BGASwipeBackHelper.Delegate {
+public abstract class BaseActivity extends AppCompatActivity implements BGASwipeBackHelper.Delegate {
     protected BGASwipeBackHelper mSwipeBackHelper;
+    private ViewDataBinding dataBinding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        // 「必须在 Application 的 onCreate 方法中执行 BGASwipeBackManager.getInstance().init(this) 来初始化滑动返回」
+        // 「必须在 Application 的 onCreate 方法中执行 BGASwipeBackManager.getInstance().onInit(this) 来初始化滑动返回」
         // 在 super.onCreate(savedInstanceState) 之前调用该方法
         initSwipeBackFinish();
         super.onCreate(savedInstanceState);
+        dataBinding = DataBindingUtil.setContentView(this, getLayoutId());
+//        setupStatusBar();
+        onInit(savedInstanceState);
     }
+
+    /**
+     * 子类必须实现，用于创建 view
+     *
+     * @return 布局文件 Id
+     */
+    @LayoutRes
+    protected abstract int getLayoutId();
+
+    /**
+     * 获取 ViewDataBinding
+     *
+     * @param <T> BaseActivity#getLayoutId() 布局创建的 ViewDataBinding
+     *            如 R.layout.activity_demo 会创建出 ActivityDemoBinding.java
+     * @return T
+     */
+    protected <T extends ViewDataBinding> T getDataBinding() {
+        return (T) dataBinding;
+    }
+
+    /**
+     * 开始的方法
+     *
+     * @param savedInstanceState 保存的 Bundle
+     */
+    protected abstract void onInit(@Nullable Bundle savedInstanceState);
 
     /**
      * 设置沉浸式状态栏
@@ -47,7 +82,10 @@ public abstract class SwipeBackBaseActivity extends AppCompatActivity implements
      */
     protected abstract View[] setImmersiveView();
 
-    private boolean isSetupImmersive; // 是否设置已经设置了沉浸式状态栏
+    /**
+     * 是否已经设置了沉浸式状态栏
+     */
+    private boolean isSetupImmersive;
 
     @Override
     protected void onResume() {
@@ -59,16 +97,17 @@ public abstract class SwipeBackBaseActivity extends AppCompatActivity implements
     }
 
     /**
+     * https://github.com/bingoogolapple/BGASwipeBackLayout-Android
      * 初始化滑动返回。在 super.onCreate(savedInstanceState) 之前调用该方法
      */
     private void initSwipeBackFinish() {
         mSwipeBackHelper = new BGASwipeBackHelper(this, this);
 
-        // 「必须在 Application 的 onCreate 方法中执行 BGASwipeBackManager.getInstance().init(this) 来初始化滑动返回」
+        // 「必须在 Application 的 onCreate 方法中执行 BGASwipeBackManager.getInstance().onInit(this) 来初始化滑动返回」
         // 下面几项可以不配置，这里只是为了讲述接口用法。
 
         // 设置滑动返回是否可用。默认值为 true
-        mSwipeBackHelper.setSwipeBackEnable(true);
+//        mSwipeBackHelper.setSwipeBackEnable(true);
         // 设置是否仅仅跟踪左侧边缘的滑动返回。默认值为 true
         mSwipeBackHelper.setIsOnlyTrackingLeftEdge(true);
         // 设置是否是微信滑动返回样式。默认值为 true
@@ -116,6 +155,15 @@ public abstract class SwipeBackBaseActivity extends AppCompatActivity implements
     @Override
     public void onSwipeBackLayoutExecuted() {
         mSwipeBackHelper.swipeBackward();
+    }
+
+    @Override
+    public void onBackPressed() {
+        // 正在滑动返回的时候取消返回按钮事件
+        if (mSwipeBackHelper.isSliding()) {
+            return;
+        }
+        mSwipeBackHelper.backward();
     }
 
 }

@@ -3,10 +3,8 @@ package me.bakumon.ugank.module.home;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.text.TextUtils;
 import android.view.View;
@@ -21,6 +19,7 @@ import me.bakumon.ugank.ConfigManage;
 import me.bakumon.ugank.GlobalConfig;
 import me.bakumon.ugank.R;
 import me.bakumon.ugank.ThemeManage;
+import me.bakumon.ugank.base.BaseActivity;
 import me.bakumon.ugank.base.adapter.CommonViewPagerAdapter;
 import me.bakumon.ugank.databinding.ActivityHomeBinding;
 import me.bakumon.ugank.module.category.CategoryFragment;
@@ -28,7 +27,6 @@ import me.bakumon.ugank.module.favorite.FavoriteActivity;
 import me.bakumon.ugank.module.search.SearchActivity;
 import me.bakumon.ugank.module.setting.SettingActivity;
 import me.bakumon.ugank.utills.MDTintUtil;
-import me.bakumon.ugank.utills.StatusBarUtil;
 import me.bakumon.ugank.widget.AppBarCollapsingStateHelper;
 
 /**
@@ -37,7 +35,7 @@ import me.bakumon.ugank.widget.AppBarCollapsingStateHelper;
  * @author bakumon https://bakumon.me
  * @date 2016/12/8 16:42
  */
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends BaseActivity {
 
     private ActivityHomeBinding binding;
 
@@ -53,14 +51,13 @@ public class HomeActivity extends AppCompatActivity {
     private HomeViewModel homeViewModel;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_home);
-        initView();
+    protected int getLayoutId() {
+        return R.layout.activity_home;
     }
 
-    private void initView() {
-        setStatusBar();
+    @Override
+    protected void onInit(@Nullable Bundle savedInstanceState) {
+        binding = getDataBinding();
         setFabDynamicState();
         setupFragment();
 
@@ -68,13 +65,9 @@ public class HomeActivity extends AppCompatActivity {
         cacheLauncherImg();
     }
 
-    /**
-     * 沉浸式
-     */
-    private void setStatusBar() {
-        StatusBarUtil.immersive(this);
-        StatusBarUtil.setPaddingSmart(this, binding.ivHomeBanner);
-        StatusBarUtil.setPaddingSmart(this, binding.tlHomeToolbar);
+    @Override
+    protected View[] setImmersiveView() {
+        return new View[]{binding.ivHomeBanner, binding.tlHomeToolbar};
     }
 
     /**

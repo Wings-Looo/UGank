@@ -14,14 +14,18 @@ import me.bakumon.ugank.databinding.ActivityLauncherBinding;
 import me.bakumon.ugank.module.home.HomeActivity;
 
 /**
- * LauncherActivity
- * Created by bakumon on 2016/12/8.
+ * 启动页
+ *
+ * @author bakumon https://bakumon.me
+ * @date 2016/12/8
  */
 public class LauncherActivity extends AppCompatActivity implements LauncherContract.View {
 
     private ActivityLauncherBinding binding;
 
-    // 记录该 Activity 是否在前台显示
+    /**
+     * 记录该 Activity 是否在前台显示
+     */
     private boolean isResume;
 
     private LauncherContract.Presenter mLauncherPresenter = new LauncherPresenter(this);

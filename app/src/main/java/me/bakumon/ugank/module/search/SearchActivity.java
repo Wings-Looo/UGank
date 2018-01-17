@@ -1,7 +1,7 @@
 package me.bakumon.ugank.module.search;
 
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,7 +16,7 @@ import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 import me.bakumon.ugank.R;
-import me.bakumon.ugank.base.SwipeBackBaseActivity;
+import me.bakumon.ugank.base.BaseActivity;
 import me.bakumon.ugank.databinding.ActivitySearchBinding;
 import me.bakumon.ugank.entity.History;
 import me.bakumon.ugank.entity.SearchResult;
@@ -25,7 +25,12 @@ import me.bakumon.ugank.utills.MDTintUtil;
 import me.bakumon.ugank.widget.RecycleViewDivider;
 import me.bakumon.ugank.widget.recyclerviewwithfooter.OnLoadMoreListener;
 
-public class SearchActivity extends SwipeBackBaseActivity implements SearchContract.View, TextWatcher, TextView.OnEditorActionListener, OnLoadMoreListener, HistoryListAdapter.OnItemClickListener, View.OnClickListener {
+/**
+ * 搜索
+ *
+ * @author bakumon https://bakumon.me
+ */
+public class SearchActivity extends BaseActivity implements SearchContract.View, TextWatcher, TextView.OnEditorActionListener, OnLoadMoreListener, HistoryListAdapter.OnItemClickListener, View.OnClickListener {
 
     private SearchContract.Presenter mSearchPresenter = new SearchPresenter(this);
 
@@ -35,10 +40,13 @@ public class SearchActivity extends SwipeBackBaseActivity implements SearchContr
     private HistoryListAdapter mHistoryListAdapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_search);
+    protected int getLayoutId() {
+        return R.layout.activity_search;
+    }
 
+    @Override
+    protected void onInit(@Nullable Bundle savedInstanceState) {
+        binding = getDataBinding();
         initView();
         mSearchPresenter.subscribe();
         mSearchPresenter.queryHistory();

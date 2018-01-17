@@ -1,9 +1,9 @@
 package me.bakumon.ugank.module.setting;
 
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.CompoundButton;
 
@@ -11,22 +11,30 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import es.dmoral.toasty.Toasty;
 import me.bakumon.ugank.R;
-import me.bakumon.ugank.base.SwipeBackBaseActivity;
+import me.bakumon.ugank.base.BaseActivity;
 import me.bakumon.ugank.databinding.ActivitySettingBinding;
 import me.bakumon.ugank.utills.AlipayZeroSdk;
 import me.bakumon.ugank.utills.MDTintUtil;
 
-public class SettingActivity extends SwipeBackBaseActivity implements SettingContract.View, CompoundButton.OnCheckedChangeListener, View.OnClickListener {
+/**
+ * 设置
+ *
+ * @author bakumon https://bakumon.me
+ */
+public class SettingActivity extends BaseActivity implements SettingContract.View, CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
     private SettingPresenter mSettingPresenter = new SettingPresenter(this);
 
     private ActivitySettingBinding binding;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_setting);
+    protected int getLayoutId() {
+        return R.layout.activity_setting;
+    }
 
+    @Override
+    protected void onInit(@Nullable Bundle savedInstanceState) {
+        binding = getDataBinding();
         setSupportActionBar(binding.toolbarSetting);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -70,8 +78,9 @@ public class SettingActivity extends SwipeBackBaseActivity implements SettingCon
             case R.id.switch_setting_always_show_launcher_img:
                 mSettingPresenter.saveIsLauncherAlwaysShowImg(isChecked);
                 break;
+            default:
+                break;
         }
-
     }
 
     @Override
@@ -150,6 +159,9 @@ public class SettingActivity extends SwipeBackBaseActivity implements SettingCon
                 break;
             case 2:
                 thumbnailQuality = "省流";
+                break;
+            default:
+                thumbnailQuality = "默认";
                 break;
         }
         binding.tvSettingImageQualityContent.setText(thumbnailQuality);
@@ -264,7 +276,8 @@ public class SettingActivity extends SwipeBackBaseActivity implements SettingCon
 
     @Override
     public void onBackPressed() {
-        if (mSettingPresenter.isThumbnailSettingChanged()) { // 显示缩略图设置项改变
+        if (mSettingPresenter.isThumbnailSettingChanged()) {
+            // 显示缩略图设置项改变
             setResult(RESULT_OK);
         }
         super.onBackPressed();
