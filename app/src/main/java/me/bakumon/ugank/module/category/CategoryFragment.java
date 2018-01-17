@@ -102,7 +102,6 @@ public class CategoryFragment extends BaseFragment implements CategoryContract.V
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Picasso.with(CategoryFragment.this.getContext()).cancelTag(GlobalConfig.PICASSO_TAG_THUMBNAILS_CATEGORY_LIST_ITEM);
         mPresenter.unsubscribe();
     }
 

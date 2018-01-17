@@ -1,5 +1,6 @@
 package me.bakumon.ugank.module.search;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.android.flexbox.FlexboxLayoutManager;
 
 import java.util.List;
@@ -18,19 +20,21 @@ import es.dmoral.toasty.Toasty;
 import me.bakumon.ugank.R;
 import me.bakumon.ugank.base.BaseActivity;
 import me.bakumon.ugank.databinding.ActivitySearchBinding;
+import me.bakumon.ugank.entity.Favorite;
 import me.bakumon.ugank.entity.History;
 import me.bakumon.ugank.entity.SearchResult;
+import me.bakumon.ugank.module.bigimg.BigimgActivity;
+import me.bakumon.ugank.module.webview.WebViewActivity;
 import me.bakumon.ugank.utills.KeyboardUtils;
 import me.bakumon.ugank.utills.MDTintUtil;
 import me.bakumon.ugank.widget.RecycleViewDivider;
-import me.bakumon.ugank.widget.recyclerviewwithfooter.OnLoadMoreListener;
 
 /**
  * 搜索
  *
  * @author bakumon https://bakumon.me
  */
-public class SearchActivity extends BaseActivity implements SearchContract.View, TextWatcher, TextView.OnEditorActionListener, OnLoadMoreListener, HistoryListAdapter.OnItemClickListener, View.OnClickListener {
+public class SearchActivity extends BaseActivity implements SearchContract.View, TextWatcher, TextView.OnEditorActionListener, View.OnClickListener, BaseQuickAdapter.OnItemChildClickListener, BaseQuickAdapter.RequestLoadMoreListener {
 
     private SearchContract.Presenter mSearchPresenter = new SearchPresenter(this);
 
@@ -78,17 +82,17 @@ public class SearchActivity extends BaseActivity implements SearchContract.View,
         binding.swipeRefreshLayoutSearch.setRefreshing(false);
         binding.swipeRefreshLayoutSearch.setEnabled(false);
 
-        mSearchListAdapter = new SearchListAdapter(this);
+        mSearchListAdapter = new SearchListAdapter(null);
+        mSearchListAdapter.setOnItemChildClickListener(this);
+        mSearchListAdapter.setOnLoadMoreListener(this, binding.recyclerViewSearch);
         binding.recyclerViewSearch.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerViewSearch.addItemDecoration(new RecycleViewDivider(this, LinearLayoutManager.HORIZONTAL));
         binding.recyclerViewSearch.setAdapter(mSearchListAdapter);
-        binding.recyclerViewSearch.setOnLoadMoreListener(this);
-        binding.recyclerViewSearch.setEmpty();
 
-        mHistoryListAdapter = new HistoryListAdapter(this);
+        mHistoryListAdapter = new HistoryListAdapter(null);
 
-        mHistoryListAdapter.setOnItemClickListener(this);
-        mHistoryListAdapter.mData = null;
+        mHistoryListAdapter.setOnItemChildClickListener(this);
+
         binding.recyclerSearchHistory.setLayoutManager(new FlexboxLayoutManager(getApplicationContext()));
         binding.recyclerSearchHistory.setAdapter(mHistoryListAdapter);
 
@@ -102,7 +106,51 @@ public class SearchActivity extends BaseActivity implements SearchContract.View,
         binding.ivSearch.setOnClickListener(this);
         binding.ivEditClear.setOnClickListener(this);
         binding.tvSearchClean.setOnClickListener(this);
+    }
 
+    @Override
+    public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+        switch (view.getId()) {
+            case R.id.tv_item_content_history:
+                // 搜索历史 item
+                History history = mHistoryListAdapter.getData().get(position);
+                if (history.getContent() == null) {
+                    return;
+                }
+                KeyboardUtils.hideSoftInput(this);
+                binding.edSearch.setText(history.getContent());
+                binding.edSearch.setSelection(binding.edSearch.getText().toString().length());
+                mSearchPresenter.search(history.getContent(), false);
+                break;
+            case R.id.ll_item_search:
+                // 搜索结果 item
+                if (mSearchListAdapter.getData().get(position) == null) {
+                    Toasty.error(this, "数据异常").show();
+                    return;
+                }
+                Intent intent = new Intent();
+                if ("福利".equals(mSearchListAdapter.getData().get(position).type)) {
+                    intent.setClass(this, BigimgActivity.class);
+                    intent.putExtra(BigimgActivity.MEIZI_TITLE, mSearchListAdapter.getData().get(position).desc);
+                    intent.putExtra(BigimgActivity.MEIZI_URL, mSearchListAdapter.getData().get(position).url);
+                } else {
+                    intent.setClass(this, WebViewActivity.class);
+                    intent.putExtra(WebViewActivity.GANK_TITLE, mSearchListAdapter.getData().get(position).desc);
+                    intent.putExtra(WebViewActivity.GANK_URL, mSearchListAdapter.getData().get(position).url);
+                    Favorite favorite = new Favorite();
+                    favorite.setAuthor(mSearchListAdapter.getData().get(position).who);
+                    favorite.setData(mSearchListAdapter.getData().get(position).publishedAt);
+                    favorite.setTitle(mSearchListAdapter.getData().get(position).desc);
+                    favorite.setType(mSearchListAdapter.getData().get(position).type);
+                    favorite.setUrl(mSearchListAdapter.getData().get(position).url);
+                    favorite.setGankID(mSearchListAdapter.getData().get(position).ganhuo_id);
+                    intent.putExtra(WebViewActivity.FAVORITE_DATA, favorite);
+                }
+                startActivity(intent);
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
@@ -143,16 +191,14 @@ public class SearchActivity extends BaseActivity implements SearchContract.View,
 
     @Override
     public void setSearchItems(SearchResult searchResult) {
-        mSearchListAdapter.mData = searchResult.results;
-        mSearchListAdapter.notifyDataSetChanged();
+        mSearchListAdapter.setNewData(searchResult.results);
         binding.swipeRefreshLayoutSearch.setRefreshing(false);
     }
 
     @Override
     public void addSearchItems(SearchResult searchResult) {
-        int start = mSearchListAdapter.getItemCount();
-        mSearchListAdapter.mData.addAll(searchResult.results);
-        mSearchListAdapter.notifyItemRangeInserted(start, searchResult.results.size());
+        mSearchListAdapter.addData(searchResult.results);
+        mSearchListAdapter.loadMoreComplete();
     }
 
     @Override
@@ -172,17 +218,17 @@ public class SearchActivity extends BaseActivity implements SearchContract.View,
 
     @Override
     public void setLoadMoreIsLastPage() {
-        binding.recyclerViewSearch.setEnd("没有更多数据了");
+        mSearchListAdapter.loadMoreEnd();
     }
 
     @Override
     public void setEmpty() {
-        binding.recyclerViewSearch.setEmpty();
+
     }
 
     @Override
     public void setLoading() {
-        binding.recyclerViewSearch.setLoading();
+
     }
 
     @Override
@@ -199,8 +245,7 @@ public class SearchActivity extends BaseActivity implements SearchContract.View,
 
     @Override
     public void setHistory(List<History> history) {
-        mHistoryListAdapter.mData = history;
-        mHistoryListAdapter.notifyDataSetChanged();
+        mHistoryListAdapter.setNewData(history);
     }
 
     @Override
@@ -214,7 +259,7 @@ public class SearchActivity extends BaseActivity implements SearchContract.View,
     }
 
     @Override
-    public void onLoadMore() {
+    public void onLoadMoreRequested() {
         mSearchPresenter.search(binding.edSearch.getText().toString().trim(), true);
     }
 
@@ -230,6 +275,8 @@ public class SearchActivity extends BaseActivity implements SearchContract.View,
             case R.id.iv_edit_clear:
                 editClear();
                 break;
+            default:
+                break;
         }
     }
 
@@ -243,7 +290,6 @@ public class SearchActivity extends BaseActivity implements SearchContract.View,
     }
 
     public void editClear() {
-        binding.recyclerViewSearch.setEmpty();
         binding.edSearch.setText("");
         KeyboardUtils.showSoftInput(this, binding.edSearch);
         hideSwipLoading();
@@ -270,9 +316,7 @@ public class SearchActivity extends BaseActivity implements SearchContract.View,
             hideEditClear();
             hideSwipLoading();
             mSearchPresenter.unsubscribe();
-            binding.recyclerViewSearch.setEmpty();
-            mSearchListAdapter.mData = null;
-            mSearchListAdapter.notifyDataSetChanged();
+            mSearchListAdapter.setNewData(null);
             showSearchHistory();
             mSearchPresenter.queryHistory();
         }
@@ -284,16 +328,5 @@ public class SearchActivity extends BaseActivity implements SearchContract.View,
             search();
         }
         return false;
-    }
-
-    @Override
-    public void OnItemClick(History history) {
-        if (history == null || history.getContent() == null) {
-            return;
-        }
-        KeyboardUtils.hideSoftInput(this);
-        binding.edSearch.setText(history.getContent());
-        binding.edSearch.setSelection(binding.edSearch.getText().toString().length());
-        mSearchPresenter.search(history.getContent(), false);
     }
 }

@@ -9,7 +9,9 @@ import me.bakumon.ugank.App;
 
 /**
  * 清理缓存
- * Created by bakumon on 17-3-6.
+ *
+ * @author bakumon
+ * @date 17-3-6
  */
 
 public class DataCleanManager {

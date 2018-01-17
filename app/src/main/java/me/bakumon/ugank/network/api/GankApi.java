@@ -8,7 +8,9 @@ import rx.Observable;
 
 /**
  * gank.io 接口
- * Created by bakumon on 16-12-1.
+ *
+ * @author bakumon
+ * @date 16-12-1
  */
 
 public interface GankApi {

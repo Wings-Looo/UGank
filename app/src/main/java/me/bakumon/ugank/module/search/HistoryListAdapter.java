@@ -1,51 +1,34 @@
 package me.bakumon.ugank.module.search;
 
-import android.content.Context;
-import android.view.View;
+import android.support.annotation.Nullable;
+
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
+
+import java.util.List;
 
 import me.bakumon.ugank.R;
-import me.bakumon.ugank.base.adapter.CommonAdapter4RecyclerView;
-import me.bakumon.ugank.base.adapter.CommonHolder4RecyclerView;
-import me.bakumon.ugank.base.adapter.ListenerWithPosition;
+import me.bakumon.ugank.entity.Favorite;
 import me.bakumon.ugank.entity.History;
+import me.bakumon.ugank.utills.DateUtil;
 
 /**
- * HistoryListAdapter
- * Created by bakumon on 2017/2/18.
+ * 搜索历史 Adapter
+ *
+ * @author bakumon https://bakumon.me
+ * @date 2017/2/18
  */
 
-public class HistoryListAdapter extends CommonAdapter4RecyclerView<History> implements ListenerWithPosition.OnClickWithPositionListener<CommonHolder4RecyclerView> {
+public class HistoryListAdapter extends BaseQuickAdapter<History, BaseViewHolder> {
 
-    public HistoryListAdapter(Context context) {
-        super(context, null, R.layout.item_history);
+    public HistoryListAdapter(@Nullable List<History> data) {
+        super(R.layout.item_history, data);
     }
 
     @Override
-    public void convert(CommonHolder4RecyclerView holder, History history) {
-        if (history != null) {
-            holder.setTextViewText(R.id.tv_item_content_history, history.getContent() == null ? "unknown" : history.getContent());
-            holder.setOnClickListener(this, R.id.tv_item_content_history);
-        }
+    protected void convert(BaseViewHolder helper, History item) {
+        helper.setText(R.id.tv_item_content_history, item.getContent() == null ? "unknown" : item.getContent())
+                .addOnClickListener(R.id.tv_item_content_history);
+
     }
-
-    @Override
-    public void onClick(View v, int position, CommonHolder4RecyclerView holder) {
-        if (mData.get(position) == null) {
-            return;
-        }
-        if (mOnItemClickListener != null) {
-            mOnItemClickListener.OnItemClick(mData.get(position));
-        }
-    }
-
-    private OnItemClickListener mOnItemClickListener;
-
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        mOnItemClickListener = onItemClickListener;
-    }
-
-    public interface OnItemClickListener {
-        void OnItemClick(History history);
-    }
-
 }

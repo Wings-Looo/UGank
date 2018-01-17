@@ -19,7 +19,9 @@ import me.bakumon.ugank.R;
 
 /**
  * 方形加载动画
- * Created by growth on 11/19/16.
+ *
+ * @author growth
+ * @date 11/19/16
  */
 
 public class SquareLoading extends ViewGroup {

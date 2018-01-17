@@ -5,6 +5,7 @@ import org.litepal.crud.DataSupport;
 /**
  * History
  * Created by bakumon on 2017/2/18
+ * @author mafei
  */
 public class History extends DataSupport {
     private long createTimeMill;

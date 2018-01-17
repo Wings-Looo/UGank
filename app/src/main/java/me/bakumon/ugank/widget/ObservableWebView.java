@@ -5,6 +5,9 @@ import android.util.AttributeSet;
 import android.webkit.WebView;
 
 
+/**
+ * @author bakumon https://bakumon.me
+ */
 public class ObservableWebView extends WebView {
 
     private OnScrollChangedCallback mOnScrollChangedCallback;

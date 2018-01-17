@@ -6,7 +6,9 @@ import java.io.Serializable;
 
 /**
  * Favorite
- * Created by bakumon on 17-3-22.
+ *
+ * @author bakumon
+ * @date 17-3-22
  */
 
 public class Favorite extends DataSupport implements Serializable{

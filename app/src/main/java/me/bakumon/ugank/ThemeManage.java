@@ -3,7 +3,9 @@ package me.bakumon.ugank;
 /**
  * ThemeManage
  * 主题色管理类
- * Created by bakumon on 2016/12/22 15:03.
+ *
+ * @author bakumon
+ * @date 2016/12/22 15:03
  */
 public enum ThemeManage {
     INSTANCE;

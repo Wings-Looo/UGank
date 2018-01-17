@@ -4,7 +4,9 @@ import java.util.List;
 
 /**
  * CategoryResult
- * Created by bakumon on 2016/12/8.
+ *
+ * @author bakumon
+ * @date 2016/12/8
  */
 public class CategoryResult {
 

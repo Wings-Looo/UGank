@@ -20,7 +20,6 @@ import me.bakumon.ugank.GlobalConfig;
 import me.bakumon.ugank.R;
 import me.bakumon.ugank.ThemeManage;
 import me.bakumon.ugank.base.BaseActivity;
-import me.bakumon.ugank.base.adapter.CommonViewPagerAdapter;
 import me.bakumon.ugank.databinding.ActivityHomeBinding;
 import me.bakumon.ugank.module.category.CategoryFragment;
 import me.bakumon.ugank.module.favorite.FavoriteActivity;
@@ -98,7 +97,7 @@ public class HomeActivity extends BaseActivity {
                 GlobalConfig.CATEGORY_NAME_FRONT_END,
                 GlobalConfig.CATEGORY_NAME_RECOMMEND,
                 GlobalConfig.CATEGORY_NAME_RESOURCE};
-        CommonViewPagerAdapter infoPagerAdapter = new CommonViewPagerAdapter(getSupportFragmentManager(), titles);
+        HomeViewPagerAdapter infoPagerAdapter = new HomeViewPagerAdapter(getSupportFragmentManager(), titles);
 
         // App
         appFragment = CategoryFragment.newInstance(titles[0]);

@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 
 /**
  * ConfigManage
- * Created by bakumon on 2016/12/22 15:44.
+ *
+ * @author bakumon
+ * @date 2016/12/22 15:44
  */
 public enum ConfigManage {
     INSTANCE;

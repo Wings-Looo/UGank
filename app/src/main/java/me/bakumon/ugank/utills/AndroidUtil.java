@@ -39,13 +39,16 @@ public class AndroidUtil {
 
     /**
      * 复制文字到剪切板
-     * @param context 上下文
+     *
+     * @param context  上下文
      * @param copyText 要复制的文本
      */
     public static boolean copyText(Context context, String copyText) {
         ClipboardManager cmb = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData data = ClipData.newRawUri("gankUrl", Uri.parse(copyText));
-        cmb.setPrimaryClip(data);
+        if (cmb != null) {
+            cmb.setPrimaryClip(data);
+        }
         return true;
     }
 }

@@ -10,7 +10,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * 网络层
- * Created by bakumon on 16-12-1.
+ *
+ * @author bakumon
+ * @date 16-12-1
  */
 
 public class NetWork {

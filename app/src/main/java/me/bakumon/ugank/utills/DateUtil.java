@@ -6,7 +6,9 @@ import java.util.Date;
 
 /**
  * 日期工具类
- * Created by bakumon on 2016/12/8 17:18.
+ *
+ * @author bakumon
+ * @date 2016/12/8 17:18
  */
 public class DateUtil {
     public static String dateFormat(String timestamp) {

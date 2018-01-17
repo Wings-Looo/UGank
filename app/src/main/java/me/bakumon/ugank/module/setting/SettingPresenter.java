@@ -1,10 +1,9 @@
 package me.bakumon.ugank.module.setting;
 
-import me.bakumon.ugank.App;
+import me.bakumon.ugank.BuildConfig;
 import me.bakumon.ugank.ConfigManage;
 import me.bakumon.ugank.ThemeManage;
 import me.bakumon.ugank.utills.DataCleanManager;
-import me.bakumon.ugank.utills.PackageUtil;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -39,7 +38,7 @@ public class SettingPresenter implements SettingContract.Presenter {
         setImageQualityChooseIsEnable(ConfigManage.INSTANCE.isListShowImg());
         setIsLauncherAlwaysShowImgEnable(ConfigManage.INSTANCE.isShowLauncherImg());
 
-        mView.setAppVersionNameInTv(PackageUtil.getVersionName(App.getInstance()));
+        mView.setAppVersionNameInTv(BuildConfig.VERSION_NAME);
         setThumbnailQuality(ConfigManage.INSTANCE.getThumbnailQuality());
         mView.showCacheSize(DataCleanManager.getTotalCacheSize());
 

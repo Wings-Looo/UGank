@@ -31,7 +31,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BGASwipe
         initSwipeBackFinish();
         super.onCreate(savedInstanceState);
         dataBinding = DataBindingUtil.setContentView(this, getLayoutId());
-//        setupStatusBar();
         onInit(savedInstanceState);
     }
 
@@ -106,8 +105,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BGASwipe
         // 「必须在 Application 的 onCreate 方法中执行 BGASwipeBackManager.getInstance().onInit(this) 来初始化滑动返回」
         // 下面几项可以不配置，这里只是为了讲述接口用法。
 
-        // 设置滑动返回是否可用。默认值为 true
-//        mSwipeBackHelper.setSwipeBackEnable(true);
         // 设置是否仅仅跟踪左侧边缘的滑动返回。默认值为 true
         mSwipeBackHelper.setIsOnlyTrackingLeftEdge(true);
         // 设置是否是微信滑动返回样式。默认值为 true

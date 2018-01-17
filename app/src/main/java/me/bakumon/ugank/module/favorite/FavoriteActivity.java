@@ -1,11 +1,12 @@
 package me.bakumon.ugank.module.favorite;
 
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
+
+import com.chad.library.adapter.base.BaseQuickAdapter;
 
 import java.util.List;
 
@@ -14,15 +15,15 @@ import me.bakumon.ugank.R;
 import me.bakumon.ugank.base.BaseActivity;
 import me.bakumon.ugank.databinding.ActivityFavoriteBinding;
 import me.bakumon.ugank.entity.Favorite;
+import me.bakumon.ugank.module.webview.WebViewActivity;
 import me.bakumon.ugank.widget.RecycleViewDivider;
-import me.bakumon.ugank.widget.recyclerviewwithfooter.OnLoadMoreListener;
 
 /**
  * 收藏
  *
  * @author bakumon https://bakumon
  */
-public class FavoriteActivity extends BaseActivity implements FavoriteContract.View, OnLoadMoreListener {
+public class FavoriteActivity extends BaseActivity implements FavoriteContract.View, BaseQuickAdapter.OnItemChildClickListener, BaseQuickAdapter.RequestLoadMoreListener {
 
     public static final int REQUEST_CODE_FAVORITE = 101;
     public static final String FAVORITE_POSITION = "me.bakumon.ugank.module.favorite.FavoriteActivity.favorite_position";
@@ -58,8 +59,7 @@ public class FavoriteActivity extends BaseActivity implements FavoriteContract.V
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_FAVORITE) {
             int position = data.getIntExtra(FAVORITE_POSITION, -1);
             if (position != -1) {
-                mAdapter.notifyItemRemoved(position);
-                mAdapter.mData.remove(position);
+                mAdapter.remove(position);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -79,13 +79,35 @@ public class FavoriteActivity extends BaseActivity implements FavoriteContract.V
             }
         });
 
-
-        mAdapter = new FavoriteListAdapter(this);
+        mAdapter = new FavoriteListAdapter(null);
         binding.recyclerViewFavorite.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerViewFavorite.addItemDecoration(new RecycleViewDivider(this, LinearLayoutManager.HORIZONTAL));
         binding.recyclerViewFavorite.setAdapter(mAdapter);
-        binding.recyclerViewFavorite.setOnLoadMoreListener(this);
-        binding.recyclerViewFavorite.setEmpty();
+        mAdapter.setOnItemChildClickListener(this);
+        mAdapter.setOnLoadMoreListener(this, binding.recyclerViewFavorite);
+    }
+
+    @Override
+    public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+        // 通过 notifyRemoveItem 方法移除 item 后，不能使用这个 position
+
+        if (mAdapter.getData().get(position) == null) {
+            Toasty.error(this, "数据异常").show();
+            return;
+        }
+        Intent intent = new Intent();
+        intent.setClass(this, WebViewActivity.class);
+        intent.putExtra(WebViewActivity.GANK_TITLE, mAdapter.getData().get(position).getTitle());
+        intent.putExtra(WebViewActivity.GANK_URL, mAdapter.getData().get(position).getUrl());
+        intent.putExtra(WebViewActivity.FAVORITE_POSITION, position);
+        intent.putExtra(WebViewActivity.FAVORITE_DATA, mAdapter.getData().get(position));
+        startActivityForResult(intent, FavoriteActivity.REQUEST_CODE_FAVORITE);
+
+    }
+
+    @Override
+    public void onLoadMoreRequested() {
+        mPresenter.getFavoriteItems(false);
     }
 
     @Override
@@ -95,36 +117,28 @@ public class FavoriteActivity extends BaseActivity implements FavoriteContract.V
 
     @Override
     public void addFavoriteItems(List<Favorite> favorites) {
-        int start = mAdapter.getItemCount();
-        mAdapter.mData.addAll(favorites);
-        mAdapter.notifyItemRangeInserted(start, favorites.size());
+        mAdapter.addData(favorites);
+        mAdapter.loadMoreComplete();
     }
 
     @Override
     public void setFavoriteItems(List<Favorite> favorites) {
-        mAdapter.mData = favorites;
-        mAdapter.notifyDataSetChanged();
+        mAdapter.setNewData(favorites);
     }
 
     @Override
     public void setLoading() {
-        binding.recyclerViewFavorite.setLoading();
+
     }
 
     @Override
     public void setEmpty() {
-        binding.recyclerViewFavorite.setEmpty();
         Toasty.info(this, "暂无收藏").show();
     }
 
     @Override
     public void setLoadMoreIsLastPage() {
-        binding.recyclerViewFavorite.setEnd("没有更多数据了");
-    }
-
-    @Override
-    public void onLoadMore() {
-        mPresenter.getFavoriteItems(false);
+        mAdapter.loadMoreEnd();
     }
 
 }

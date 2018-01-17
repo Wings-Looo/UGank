@@ -5,7 +5,9 @@ import android.support.design.widget.AppBarLayout;
 
 /**
  * 监听可折叠 Toolbar 的折叠状态
- * Created by bakumon on 17-9-14.
+ *
+ * @author bakumon
+ * @date 17-9-14
  */
 
 public class AppBarCollapsingStateHelper {

@@ -1,4 +1,4 @@
-package me.bakumon.ugank.base.adapter;
+package me.bakumon.ugank.module.home;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -8,14 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * BaseView
- * Created by bakumon on 2016/12/6.
+ * 首页 ViewPager 适配器
+ *
+ * @author bakumon https://bakumon.me
+ * @date 2016/12/6
  */
-public class CommonViewPagerAdapter extends FragmentPagerAdapter {
+public class HomeViewPagerAdapter extends FragmentPagerAdapter {
     private String[] title;
     private List<Fragment> mFragments = new ArrayList<>();
 
-    public CommonViewPagerAdapter(FragmentManager fm, String[] titles) {
+    public HomeViewPagerAdapter(FragmentManager fm, String[] titles) {
         super(fm);
         title = titles;
     }

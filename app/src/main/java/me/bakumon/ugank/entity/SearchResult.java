@@ -4,7 +4,9 @@ import java.util.List;
 
 /**
  * SearchResult
- * Created by bakumon on 2016/12/19 17:00.
+ *
+ * @author bakumon
+ * @date 2016/12/19 17:00
  */
 public class SearchResult {
 
