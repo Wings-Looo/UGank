@@ -13,6 +13,7 @@ import me.bakumon.ugank.databinding.ActivityBigimgBinding;
 
 /**
  * 仔细查看妹子
+ *
  * @author bakumon https://bakumon.me
  */
 public class BigimgActivity extends BaseActivity implements BigimgContract.View {
@@ -106,13 +107,21 @@ public class BigimgActivity extends BaseActivity implements BigimgContract.View 
     @Override
     public String getMeiziImg() {
         Bundle bundle = getIntent().getExtras();
-        return bundle.getString(BigimgActivity.MEIZI_URL);
+        if (bundle != null) {
+            return bundle.getString(BigimgActivity.MEIZI_URL);
+        } else {
+            return null;
+        }
     }
 
     @Override
     public String getMeiziTitle() {
         Bundle bundle = getIntent().getExtras();
-        return bundle.getString(BigimgActivity.MEIZI_TITLE);
+        if (bundle != null) {
+            return bundle.getString(BigimgActivity.MEIZI_TITLE);
+        } else {
+            return null;
+        }
     }
 
     public void hideLoading() {
