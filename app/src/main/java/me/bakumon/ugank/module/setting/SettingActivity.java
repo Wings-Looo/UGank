@@ -1,5 +1,7 @@
 package me.bakumon.ugank.module.setting;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,6 +15,7 @@ import es.dmoral.toasty.Toasty;
 import me.bakumon.ugank.R;
 import me.bakumon.ugank.base.BaseActivity;
 import me.bakumon.ugank.databinding.ActivitySettingBinding;
+import me.bakumon.ugank.module.home.HomeActivity;
 import me.bakumon.ugank.utills.AlipayZeroSdk;
 import me.bakumon.ugank.utills.MDTintUtil;
 
@@ -26,6 +29,16 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
     private SettingPresenter mSettingPresenter = new SettingPresenter(this);
 
     private ActivitySettingBinding binding;
+
+    /**
+     * 打开设置
+     *
+     * @param activity           activity
+     * @param settingRequestCode 请求码
+     */
+    public static void openSettingActivityForResult(Activity activity, int settingRequestCode) {
+        activity.startActivityForResult(new Intent(activity, SettingActivity.class), settingRequestCode);
+    }
 
     @Override
     protected int getLayoutId() {

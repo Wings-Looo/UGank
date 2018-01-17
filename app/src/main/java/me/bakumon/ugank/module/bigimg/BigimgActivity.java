@@ -1,5 +1,7 @@
 package me.bakumon.ugank.module.bigimg;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -24,6 +26,14 @@ public class BigimgActivity extends BaseActivity implements BigimgContract.View 
     private BigimgContract.Presenter mBigimgPresenter = new BigimgPresenter(this);
 
     private ActivityBigimgBinding binding;
+
+    public static void openBigimgActivity(Activity activity, String meiziUrl, String meiziTitle) {
+        Intent intent = new Intent();
+        intent.setClass(activity, BigimgActivity.class);
+        intent.putExtra(BigimgActivity.MEIZI_TITLE, meiziTitle);
+        intent.putExtra(BigimgActivity.MEIZI_URL, meiziUrl);
+        activity.startActivity(intent);
+    }
 
     @Override
     protected int getLayoutId() {

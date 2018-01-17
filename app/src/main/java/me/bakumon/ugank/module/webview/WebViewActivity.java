@@ -41,7 +41,6 @@ public class WebViewActivity extends BaseActivity implements WebViewContract.Vie
      */
     private boolean isForResult;
 
-
     @Override
     protected int getLayoutId() {
         return R.layout.activity_web_view;

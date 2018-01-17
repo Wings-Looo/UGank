@@ -1,5 +1,7 @@
 package me.bakumon.ugank.module.favorite;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -32,6 +34,15 @@ public class FavoriteActivity extends BaseActivity implements FavoriteContract.V
 
     private FavoriteContract.Presenter mPresenter = new FavoritePresenter(this);
     private FavoriteListAdapter mAdapter;
+
+    /**
+     * 打开收藏
+     *
+     * @param activity activity
+     */
+    public static void openFavoriteActivity(Activity activity) {
+        activity.startActivity(new Intent(activity, FavoriteActivity.class));
+    }
 
     @Override
     protected int getLayoutId() {

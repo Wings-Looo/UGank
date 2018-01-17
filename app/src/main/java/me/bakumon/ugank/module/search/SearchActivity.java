@@ -1,10 +1,12 @@
 package me.bakumon.ugank.module.search;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
@@ -42,6 +44,15 @@ public class SearchActivity extends BaseActivity implements SearchContract.View,
 
     private SearchListAdapter mSearchListAdapter;
     private HistoryListAdapter mHistoryListAdapter;
+
+    /**
+     * 打开搜索
+     *
+     * @param activity activity
+     */
+    public static void openSearchActivity(Activity activity) {
+        activity.startActivity(new Intent(activity, SearchActivity.class));
+    }
 
     @Override
     protected int getLayoutId() {
@@ -129,10 +140,10 @@ public class SearchActivity extends BaseActivity implements SearchContract.View,
                     return;
                 }
                 Intent intent = new Intent();
-                if ("福利".equals(mSearchListAdapter.getData().get(position).type)) {
-                    intent.setClass(this, BigimgActivity.class);
-                    intent.putExtra(BigimgActivity.MEIZI_TITLE, mSearchListAdapter.getData().get(position).desc);
-                    intent.putExtra(BigimgActivity.MEIZI_URL, mSearchListAdapter.getData().get(position).url);
+                if (TextUtils.equals("福利", mSearchListAdapter.getData().get(position).type)) {
+                    BigimgActivity.openBigimgActivity(this,
+                            mSearchListAdapter.getData().get(position).url,
+                            mSearchListAdapter.getData().get(position).desc);
                 } else {
                     intent.setClass(this, WebViewActivity.class);
                     intent.putExtra(WebViewActivity.GANK_TITLE, mSearchListAdapter.getData().get(position).desc);

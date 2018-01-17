@@ -1,16 +1,18 @@
 package me.bakumon.ugank.module.launcher;
 
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
+import android.view.View;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import me.bakumon.ugank.R;
 import me.bakumon.ugank.databinding.ActivityLauncherBinding;
+import me.bakumon.ugank.module.bigimg.BigimgActivity;
 import me.bakumon.ugank.module.home.HomeActivity;
 
 /**
@@ -22,6 +24,11 @@ import me.bakumon.ugank.module.home.HomeActivity;
 public class LauncherActivity extends AppCompatActivity implements LauncherContract.View {
 
     private ActivityLauncherBinding binding;
+
+    /**
+     * 妹子 Url
+     */
+    private String meiUrl;
 
     /**
      * 记录该 Activity 是否在前台显示
@@ -40,6 +47,7 @@ public class LauncherActivity extends AppCompatActivity implements LauncherContr
 
     @Override
     public void loadImg(String url) {
+        meiUrl = url;
         try {
             Picasso.with(this)
                     .load(url)
@@ -81,13 +89,22 @@ public class LauncherActivity extends AppCompatActivity implements LauncherContr
         isResume = false;
     }
 
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.img_launcher_welcome:
+                if (!TextUtils.isEmpty(meiUrl)) {
+                    goHomeActivity();
+                    BigimgActivity.openBigimgActivity(this, meiUrl, "妹子");
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
     @Override
     public void goHomeActivity() {
-        Intent intent = new Intent(LauncherActivity.this, HomeActivity.class);
-        startActivity(intent);
-        // Activity 切换淡入淡出动画
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        finish();
+        HomeActivity.openHomeActivity(this);
     }
 
     @Override

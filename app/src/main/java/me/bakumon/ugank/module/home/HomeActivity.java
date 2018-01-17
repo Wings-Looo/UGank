@@ -1,5 +1,6 @@
 package me.bakumon.ugank.module.home;
 
+import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
@@ -21,8 +22,10 @@ import me.bakumon.ugank.R;
 import me.bakumon.ugank.ThemeManage;
 import me.bakumon.ugank.base.BaseActivity;
 import me.bakumon.ugank.databinding.ActivityHomeBinding;
+import me.bakumon.ugank.module.bigimg.BigimgActivity;
 import me.bakumon.ugank.module.category.CategoryFragment;
 import me.bakumon.ugank.module.favorite.FavoriteActivity;
+import me.bakumon.ugank.module.launcher.LauncherActivity;
 import me.bakumon.ugank.module.search.SearchActivity;
 import me.bakumon.ugank.module.setting.SettingActivity;
 import me.bakumon.ugank.utills.MDTintUtil;
@@ -48,6 +51,23 @@ public class HomeActivity extends BaseActivity {
     private CategoryFragment resFragment;
 
     private HomeViewModel homeViewModel;
+    /**
+     * 妹子 Url
+     */
+    private String imgUrl;
+
+    /**
+     * 打开首页
+     *
+     * @param activity activity
+     */
+    public static void openHomeActivity(Activity activity) {
+        Intent intent = new Intent(activity, HomeActivity.class);
+        activity.startActivity(intent);
+        // Activity 切换淡入淡出动画
+        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        activity.finish();
+    }
 
     @Override
     protected int getLayoutId() {
@@ -138,6 +158,7 @@ public class HomeActivity extends BaseActivity {
         homeViewModel.getBannerUrl(isRandom).observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String imgUrl) {
+                HomeActivity.this.imgUrl = imgUrl;
                 if (TextUtils.isEmpty(imgUrl)) {
                     Toasty.error(HomeActivity.this, getString(R.string.banner_load_fail)).show();
                     // fab 停止加载中动画
@@ -149,24 +170,33 @@ public class HomeActivity extends BaseActivity {
                         .into(binding.ivHomeBanner, PicassoPalette.with(imgUrl, binding.ivHomeBanner).intoCallBack(new PicassoPalette.CallBack() {
                             @Override
                             public void onPaletteLoaded(Palette palette) {
-                                if (palette == null) {
-                                    return;
-                                }
-                                int defaultColor = App.getInstance().getResources().getColor(R.color.colorPrimary);
-                                // 把从调色板上获取的主题色保存在内存中
-                                ThemeManage.INSTANCE.setColorPrimary(palette.getDarkVibrantColor(defaultColor));
-                                int themeColor = ThemeManage.INSTANCE.getColorPrimary();
-                                // 设置 AppBarLayout 的背景色
-                                binding.collapsingToolbar.setContentScrimColor(themeColor);
-                                binding.appbar.setBackgroundColor(themeColor);
-                                // 设置 FabButton 的背景色
-                                MDTintUtil.setTint(binding.fabHomeRandom, themeColor);
-                                // fab 停止加载中动画
-                                binding.setIsLoading(false);
+                                setThemeColor(palette);
                             }
                         }));
             }
         });
+    }
+
+    /**
+     * 设置动态主题色
+     *
+     * @param palette 妹子图中的调色板
+     */
+    private void setThemeColor(Palette palette) {
+        if (palette == null) {
+            return;
+        }
+        int defaultColor = App.getInstance().getResources().getColor(R.color.colorPrimary);
+        // 把从调色板上获取的主题色保存在内存中
+        ThemeManage.INSTANCE.setColorPrimary(palette.getDarkVibrantColor(defaultColor));
+        int themeColor = ThemeManage.INSTANCE.getColorPrimary();
+        // 设置 AppBarLayout 的背景色
+        binding.collapsingToolbar.setContentScrimColor(themeColor);
+        binding.appbar.setBackgroundColor(themeColor);
+        // 设置 FabButton 的背景色
+        MDTintUtil.setTint(binding.fabHomeRandom, themeColor);
+        // fab 停止加载中动画
+        binding.setIsLoading(false);
     }
 
     /**
@@ -203,13 +233,18 @@ public class HomeActivity extends BaseActivity {
                 getBanner(true);
                 break;
             case R.id.iv_home_collection:
-                startActivity(new Intent(HomeActivity.this, FavoriteActivity.class));
+                FavoriteActivity.openFavoriteActivity(this);
                 break;
             case R.id.iv_home_setting:
-                startActivityForResult(new Intent(HomeActivity.this, SettingActivity.class), SETTING_REQUEST_CODE);
+                SettingActivity.openSettingActivityForResult(this, SETTING_REQUEST_CODE);
                 break;
             case R.id.ll_home_search:
-                startActivity(new Intent(HomeActivity.this, SearchActivity.class));
+                SearchActivity.openSearchActivity(this);
+                break;
+            case R.id.iv_home_banner:
+                if (!TextUtils.isEmpty(imgUrl)) {
+                    BigimgActivity.openBigimgActivity(this, imgUrl, "妹子");
+                }
                 break;
             default:
                 break;
