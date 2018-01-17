@@ -31,6 +31,7 @@ public class BigimgActivity extends BaseActivity implements BigimgContract.View 
 
     @Override
     protected void onInit(@Nullable Bundle savedInstanceState) {
+        binding = getDataBinding();
         initView();
         mBigimgPresenter.subscribe();
     }
