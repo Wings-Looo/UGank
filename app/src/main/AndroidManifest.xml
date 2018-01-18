@@ -28,6 +28,7 @@
         <!-- 主页 -->
         <activity
             android:name=".module.home.HomeActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <!-- WebView -->
         <activity

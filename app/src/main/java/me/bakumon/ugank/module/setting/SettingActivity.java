@@ -55,7 +55,7 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
         binding.toolbarSetting.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onBackPressed();
+                finish();
             }
         });
         binding.switchSetting.setOnCheckedChangeListener(this);
@@ -288,12 +288,12 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
     }
 
     @Override
-    public void onBackPressed() {
+    public void finish() {
         if (mSettingPresenter.isThumbnailSettingChanged()) {
             // 显示缩略图设置项改变
             setResult(RESULT_OK);
         }
-        super.onBackPressed();
+        super.finish();
     }
 
     @Override
