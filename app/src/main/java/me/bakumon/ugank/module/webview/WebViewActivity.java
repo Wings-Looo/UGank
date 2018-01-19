@@ -1,5 +1,6 @@
 package me.bakumon.ugank.module.webview;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -28,10 +29,10 @@ import me.bakumon.ugank.widget.ObservableWebView;
  */
 public class WebViewActivity extends BaseActivity implements WebViewContract.View, View.OnClickListener {
 
-    public static final String GANK_URL = "me.bakumon.gank.module.webview.WebViewActivity.gank_url";
-    public static final String GANK_TITLE = "me.bakumon.gank.module.webview.WebViewActivity.gank_title";
-    public static final String FAVORITE_DATA = "me.bakumon.gank.module.webview.WebViewActivity.favorite_data";
-    public static final String FAVORITE_POSITION = "me.bakumon.gank.module.webview.WebViewActivity.favorite_position";
+    private static final String GANK_URL = "me.bakumon.gank.module.webview.WebViewActivity.gank_url";
+    private static final String GANK_TITLE = "me.bakumon.gank.module.webview.WebViewActivity.gank_title";
+    private static final String FAVORITE_DATA = "me.bakumon.gank.module.webview.WebViewActivity.favorite_data";
+    private static final String FAVORITE_POSITION = "me.bakumon.gank.module.webview.WebViewActivity.favorite_position";
 
     private ActivityWebViewBinding binding;
 
@@ -40,6 +41,33 @@ public class WebViewActivity extends BaseActivity implements WebViewContract.Vie
      * 是否回传结果
      */
     private boolean isForResult;
+
+    /**
+     * 打开 WebViewActivity
+     *
+     * @param activity activity
+     */
+    public static void openWebViewActivity(Activity activity, String url, String title, Favorite favorite) {
+        Intent intent = new Intent(activity, WebViewActivity.class);
+        intent.putExtra(WebViewActivity.GANK_TITLE, title);
+        intent.putExtra(WebViewActivity.GANK_URL, url);
+        intent.putExtra(WebViewActivity.FAVORITE_DATA, favorite);
+        activity.startActivity(intent);
+    }
+
+    /**
+     * 打开 WebViewActivity 回传值
+     *
+     * @param activity activity
+     */
+    public static void openWebViewActivityForResult(Activity activity, String url, String title, int favortitePostion,Favorite favorite, int requestCode) {
+        Intent intent = new Intent(activity, WebViewActivity.class);
+        intent.putExtra(WebViewActivity.GANK_TITLE, title);
+        intent.putExtra(WebViewActivity.GANK_URL, url);
+        intent.putExtra(WebViewActivity.FAVORITE_POSITION, favortitePostion);
+        intent.putExtra(WebViewActivity.FAVORITE_DATA, favorite);
+        activity.startActivityForResult(intent, requestCode);
+    }
 
     @Override
     protected int getLayoutId() {

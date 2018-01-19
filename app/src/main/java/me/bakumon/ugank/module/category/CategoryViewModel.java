@@ -61,8 +61,6 @@ public class CategoryViewModel extends ViewModel {
     private void getCategoryItems(final boolean isRefresh) {
         if (isRefresh) {
             mPage = 1;
-        } else {
-            mPage += 1;
         }
         Subscription subscription = NetWork.getGankApi()
                 .getCategoryDate(categoryName, GlobalConfig.PAGE_SIZE_CATEGORY, mPage)
@@ -89,6 +87,7 @@ public class CategoryViewModel extends ViewModel {
                         } else {
                             mObservableLoadMore.setValue(androidResult);
                         }
+                        mPage += 1;
                     }
                 });
         mSubscriptions.add(subscription);

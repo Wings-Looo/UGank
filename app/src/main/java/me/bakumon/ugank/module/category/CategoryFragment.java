@@ -16,6 +16,8 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import java.util.List;
 
 import es.dmoral.toasty.Toasty;
+import me.bakumon.statuslayoutmanager.library.DefaultOnStatusChildClickListener;
+import me.bakumon.statuslayoutmanager.library.StatusLayoutManager;
 import me.bakumon.ugank.R;
 import me.bakumon.ugank.base.BaseFragment;
 import me.bakumon.ugank.databinding.FragmentBinding;
@@ -38,6 +40,7 @@ public class CategoryFragment extends BaseFragment implements SwipeRefreshLayout
     private FragmentBinding mBinding;
     private CategoryListAdapter mCategoryListAdapter;
     private CategoryViewModel mCategoryViewModel;
+    private StatusLayoutManager mStatusLayoutManager;
 
     public static CategoryFragment newInstance(String categoryName) {
         CategoryFragment categoryFragment = new CategoryFragment();
@@ -69,7 +72,6 @@ public class CategoryFragment extends BaseFragment implements SwipeRefreshLayout
     private void initView() {
         // 获取该Fragment的 DataBinding 对象
         mBinding = getDataBinding();
-        mBinding.swipeRefreshLayout.setColorSchemeResources(R.color.colorSwipeRefresh1, R.color.colorSwipeRefresh2, R.color.colorSwipeRefresh3, R.color.colorSwipeRefresh4, R.color.colorSwipeRefresh5, R.color.colorSwipeRefresh6);
         mBinding.swipeRefreshLayout.setOnRefreshListener(this);
 
         mCategoryListAdapter = new CategoryListAdapter(null);
@@ -78,6 +80,17 @@ public class CategoryFragment extends BaseFragment implements SwipeRefreshLayout
         mBinding.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mBinding.recyclerView.addItemDecoration(new RecycleViewDivider(getActivity(), LinearLayoutManager.HORIZONTAL));
         mBinding.recyclerView.setAdapter(mCategoryListAdapter);
+
+        getStatusLayout();
+    }
+
+    private void getStatusLayout() {
+        mStatusLayoutManager = getStatusLayoutManager(mBinding.swipeRefreshLayout, new DefaultOnStatusChildClickListener() {
+            @Override
+            public void onErrorChildClick(View view) {
+                getRefreshData(false);
+            }
+        });
     }
 
     @Override
@@ -91,18 +104,28 @@ public class CategoryFragment extends BaseFragment implements SwipeRefreshLayout
         getRefreshData(true);
     }
 
-    private void getRefreshData(boolean isSwipRefresh) {
+    private void getRefreshData(boolean isSwipeRefresh) {
+        if (!isSwipeRefresh) {
+            mStatusLayoutManager.showLoadingLayout();
+        }
         mCategoryViewModel.getRefreshData().observe(this, new Observer<CategoryResult>() {
             @Override
             public void onChanged(@Nullable CategoryResult categoryResult) {
-                if (categoryResult == null) {
-                    if (getActivity() != null) {
-                        Toasty.error(getActivity(), "刷新数据为空").show();
-                    }
-                } else {
-                    mCategoryListAdapter.setNewData(categoryResult.results);
-                }
                 mBinding.swipeRefreshLayout.setRefreshing(false);
+                if (categoryResult == null) {
+                    mStatusLayoutManager.showErrorLayout();
+                    return;
+                }
+                if (categoryResult.error) {
+                    mStatusLayoutManager.showErrorLayout();
+                    return;
+                }
+                if (categoryResult.results == null || categoryResult.results.size() < 1) {
+                    mStatusLayoutManager.showEmptyLayout();
+                    return;
+                }
+                mStatusLayoutManager.showSuccessLayout();
+                mCategoryListAdapter.setNewData(categoryResult.results);
             }
         });
     }
@@ -116,14 +139,12 @@ public class CategoryFragment extends BaseFragment implements SwipeRefreshLayout
         mCategoryViewModel.getLoadMoreData().observe(this, new Observer<CategoryResult>() {
             @Override
             public void onChanged(@Nullable CategoryResult categoryResult) {
-                if (categoryResult == null) {
-                    if (getActivity() != null) {
-                        Toasty.error(getActivity(), "加载更多数据为空").show();
-                    }
-                } else {
-                    mCategoryListAdapter.addData(categoryResult.results);
-                }
                 mCategoryListAdapter.loadMoreComplete();
+                if (categoryResult == null || categoryResult.error) {
+                    mCategoryListAdapter.loadMoreFail();
+                    return;
+                }
+                mCategoryListAdapter.addData(categoryResult.results);
             }
         });
     }
@@ -144,9 +165,6 @@ public class CategoryFragment extends BaseFragment implements SwipeRefreshLayout
                     Toasty.error(getActivity(), "数据异常").show();
                     return;
                 }
-                Intent intent = new Intent(getContext(), WebViewActivity.class);
-                intent.putExtra(WebViewActivity.GANK_TITLE, beans.get(position).desc);
-                intent.putExtra(WebViewActivity.GANK_URL, beans.get(position).url);
                 Favorite favorite = new Favorite();
                 favorite.setAuthor(beans.get(position).who);
                 favorite.setData(beans.get(position).publishedAt);
@@ -154,8 +172,8 @@ public class CategoryFragment extends BaseFragment implements SwipeRefreshLayout
                 favorite.setType(beans.get(position).type);
                 favorite.setUrl(beans.get(position).url);
                 favorite.setGankID(beans.get(position)._id);
-                intent.putExtra(WebViewActivity.FAVORITE_DATA, favorite);
-                startActivity(intent);
+
+                WebViewActivity.openWebViewActivity(getActivity(), beans.get(position).url, beans.get(position).desc, favorite);
                 break;
             default:
                 break;

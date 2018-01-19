@@ -1,7 +1,6 @@
 package me.bakumon.ugank.module.favorite;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -106,13 +105,13 @@ public class FavoriteActivity extends BaseActivity implements FavoriteContract.V
             Toasty.error(this, "数据异常").show();
             return;
         }
-        Intent intent = new Intent();
-        intent.setClass(this, WebViewActivity.class);
-        intent.putExtra(WebViewActivity.GANK_TITLE, mAdapter.getData().get(position).getTitle());
-        intent.putExtra(WebViewActivity.GANK_URL, mAdapter.getData().get(position).getUrl());
-        intent.putExtra(WebViewActivity.FAVORITE_POSITION, position);
-        intent.putExtra(WebViewActivity.FAVORITE_DATA, mAdapter.getData().get(position));
-        startActivityForResult(intent, FavoriteActivity.REQUEST_CODE_FAVORITE);
+        WebViewActivity.openWebViewActivityForResult(this,
+                mAdapter.getData().get(position).getUrl(),
+                mAdapter.getData().get(position).getTitle(),
+                position,
+                mAdapter.getData().get(position),
+                FavoriteActivity.REQUEST_CODE_FAVORITE
+        );
 
     }
 

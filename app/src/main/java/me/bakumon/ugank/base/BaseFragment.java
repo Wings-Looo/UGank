@@ -11,6 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import me.bakumon.statuslayoutmanager.library.OnStatusChildClickListener;
+import me.bakumon.statuslayoutmanager.library.StatusLayoutManager;
+import me.bakumon.ugank.R;
+
 
 /**
  * 1.ViewDataBinding 封装
@@ -56,5 +60,24 @@ public abstract class BaseFragment extends Fragment {
      */
     protected <T extends ViewDataBinding> T getDataBinding() {
         return (T) dataBinding;
+    }
+
+    /**
+     * 获取 StatusLayoutManager
+     *
+     * @param targetView 需要替换的 View
+     * @param listener   按钮点击监听器
+     * @return StatusLayoutManager
+     */
+    protected StatusLayoutManager getStatusLayoutManager(View targetView, OnStatusChildClickListener listener) {
+
+        StatusLayoutManager.Builder builder = new StatusLayoutManager.Builder(targetView)
+                .setDefaultEmptyClickViewVisible(false)
+                .setLoadingLayout(R.layout.layout_loading)
+                .setEmptyLayout(R.layout.layout_empty)
+                .setErrorLayout(R.layout.layout_error)
+                .setOnStatusChildClickListener(listener);
+
+        return builder.build();
     }
 }

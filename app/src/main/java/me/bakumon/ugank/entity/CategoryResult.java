@@ -12,6 +12,7 @@ public class CategoryResult {
 
     public boolean error;
     public List<ResultsBean> results;
+    public List<ResultsBean> results1;
 
     public static class ResultsBean {
 
