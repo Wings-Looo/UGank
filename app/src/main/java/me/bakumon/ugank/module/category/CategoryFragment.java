@@ -108,12 +108,14 @@ public class CategoryFragment extends BaseFragment implements SwipeRefreshLayout
             @Override
             public void onChanged(@Nullable CategoryResult categoryResult) {
                 mBinding.swipeRefreshLayout.setRefreshing(false);
-                if (categoryResult == null) {
-                    mStatusLayoutManager.showErrorLayout();
-                    return;
-                }
-                if (categoryResult.error) {
-                    mStatusLayoutManager.showErrorLayout();
+                if (categoryResult == null || categoryResult.error) {
+                    // 加载失败时，如果列表已经有数据了，弱提示
+                    if (mCategoryListAdapter.getData().size() > 0 && getActivity() != null) {
+                        Toasty.error(getActivity(), "刷新失败").show();
+                        mStatusLayoutManager.showSuccessLayout();
+                    } else {
+                        mStatusLayoutManager.showErrorLayout();
+                    }
                     return;
                 }
                 if (categoryResult.results == null || categoryResult.results.size() < 1) {
