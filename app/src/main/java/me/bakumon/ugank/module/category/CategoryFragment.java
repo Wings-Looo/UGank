@@ -81,10 +81,6 @@ public class CategoryFragment extends BaseFragment implements SwipeRefreshLayout
         mBinding.recyclerView.addItemDecoration(new RecycleViewDivider(getActivity(), LinearLayoutManager.HORIZONTAL));
         mBinding.recyclerView.setAdapter(mCategoryListAdapter);
 
-        getStatusLayout();
-    }
-
-    private void getStatusLayout() {
         mStatusLayoutManager = getStatusLayoutManager(mBinding.swipeRefreshLayout, new DefaultOnStatusChildClickListener() {
             @Override
             public void onErrorChildClick(View view) {
