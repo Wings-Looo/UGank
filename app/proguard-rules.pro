@@ -479,3 +479,9 @@
 #litepalang
 -keep class org.litepal.** {*;}
 -keep class * extends org.litepal.crud.DataSupport {*;}
+
+-ignorewarnings
+
+-keep class * {
+    public private *;
+}

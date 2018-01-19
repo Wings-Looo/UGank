@@ -139,15 +139,11 @@ public class SearchActivity extends BaseActivity implements SearchContract.View,
                     Toasty.error(this, "数据异常").show();
                     return;
                 }
-                Intent intent = new Intent();
                 if (TextUtils.equals("福利", mSearchListAdapter.getData().get(position).type)) {
                     BigimgActivity.openBigimgActivity(this,
                             mSearchListAdapter.getData().get(position).url,
                             mSearchListAdapter.getData().get(position).desc);
                 } else {
-                    intent.setClass(this, WebViewActivity.class);
-//                    intent.putExtra(WebViewActivity.GANK_TITLE, mSearchListAdapter.getData().get(position).desc);
-//                    intent.putExtra(WebViewActivity.GANK_URL, mSearchListAdapter.getData().get(position).url);
                     Favorite favorite = new Favorite();
                     favorite.setAuthor(mSearchListAdapter.getData().get(position).who);
                     favorite.setData(mSearchListAdapter.getData().get(position).publishedAt);
@@ -155,14 +151,12 @@ public class SearchActivity extends BaseActivity implements SearchContract.View,
                     favorite.setType(mSearchListAdapter.getData().get(position).type);
                     favorite.setUrl(mSearchListAdapter.getData().get(position).url);
                     favorite.setGankID(mSearchListAdapter.getData().get(position).ganhuo_id);
-//                    intent.putExtra(WebViewActivity.FAVORITE_DATA, favorite);
 
                     WebViewActivity.openWebViewActivity(this,
                             mSearchListAdapter.getData().get(position).url,
                             mSearchListAdapter.getData().get(position).desc,
                             favorite);
                 }
-                startActivity(intent);
                 break;
             default:
                 break;
