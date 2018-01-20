@@ -480,8 +480,21 @@
 -keep class org.litepal.** {*;}
 -keep class * extends org.litepal.crud.DataSupport {*;}
 
+
+## fix：Error:Execution failed for task ':app:transformClassesAndResourcesWithProguardForRelease'.
+#       > Job failed, see logs for details
 -ignorewarnings
 
 -keep class * {
     public private *;
+}
+
+# BaseRecyclerViewAdapterHelper
+-keep class com.chad.library.adapter.** {
+*;
+}
+-keep public class * extends com.chad.library.adapter.base.BaseQuickAdapter
+-keep public class * extends com.chad.library.adapter.base.BaseViewHolder
+-keepclassmembers  class **$** extends com.chad.library.adapter.base.BaseViewHolder {
+     <init>(...);
 }
