@@ -7,7 +7,6 @@ import me.bakumon.ugank.base.BaseViewModel;
 import me.bakumon.ugank.entity.CategoryResult;
 import me.bakumon.ugank.network.NetWork;
 import rx.Observer;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Category ViewHModel
@@ -30,10 +29,6 @@ public class CategoryViewModel extends BaseViewModel {
      * 分类名，用于拼接 url
      */
     private String categoryName;
-
-    public CategoryViewModel() {
-        this.mSubscriptions = new CompositeSubscription();
-    }
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;

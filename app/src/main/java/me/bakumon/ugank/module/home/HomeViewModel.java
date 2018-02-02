@@ -1,16 +1,12 @@
 package me.bakumon.ugank.module.home;
 
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
 
+import me.bakumon.ugank.base.BaseViewModel;
 import me.bakumon.ugank.entity.CategoryResult;
 import me.bakumon.ugank.network.NetWork;
 import rx.Observable;
 import rx.Observer;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * 首页 ViewHModel
@@ -19,11 +15,7 @@ import rx.subscriptions.CompositeSubscription;
  * @date 2017/11/10
  */
 
-public class HomeViewModel extends ViewModel {
-    /**
-     * RxJava 的订阅者集合
-     */
-    private CompositeSubscription mSubscriptions;
+public class HomeViewModel extends BaseViewModel {
     /**
      * 保存妹子图片 Url 的 LiveData
      */
@@ -32,10 +24,6 @@ public class HomeViewModel extends ViewModel {
      * 保存缓存 Url 的 LiveData
      */
     private MutableLiveData<String> mObservableCacheUrl;
-
-    public HomeViewModel() {
-        this.mSubscriptions = new CompositeSubscription();
-    }
 
     public MutableLiveData<String> getBannerUrl(boolean isRandom) {
         // ♥♥ 使用 MutableLiveData 或 自定义 LiveData
@@ -74,41 +62,32 @@ public class HomeViewModel extends ViewModel {
             }
         }
 
-        Subscription subscription = observable
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<CategoryResult>() {
-                    @Override
-                    public void onCompleted() {
-                    }
+        getHttpData(observable, new Observer<CategoryResult>() {
+            @Override
+            public void onCompleted() {
 
-                    @Override
-                    public void onError(Throwable e) {
-                        if (isCache) {
-                            mObservableCacheUrl.setValue(null);
-                        } else {
-                            mObservableUrl.setValue(null);
-                        }
+            }
 
-                    }
+            @Override
+            public void onError(Throwable e) {
+                if (isCache) {
+                    mObservableCacheUrl.setValue(null);
+                } else {
+                    mObservableUrl.setValue(null);
+                }
+            }
 
-                    @Override
-                    public void onNext(CategoryResult meiziResult) {
-                        boolean urlIsNotNull = meiziResult != null
-                                && meiziResult.results != null
-                                && meiziResult.results.get(0) != null;
-                        if (isCache) {
-                            mObservableCacheUrl.setValue(urlIsNotNull ? meiziResult.results.get(0).url : null);
-                        } else {
-                            mObservableUrl.setValue(urlIsNotNull ? meiziResult.results.get(0).url : null);
-                        }
-                    }
-                });
-        mSubscriptions.add(subscription);
-    }
-
-    @Override
-    protected void onCleared() {
-        mSubscriptions.clear();
+            @Override
+            public void onNext(CategoryResult categoryResult) {
+                boolean urlIsNotNull = categoryResult != null
+                        && categoryResult.results != null
+                        && categoryResult.results.get(0) != null;
+                if (isCache) {
+                    mObservableCacheUrl.setValue(urlIsNotNull ? categoryResult.results.get(0).url : null);
+                } else {
+                    mObservableUrl.setValue(urlIsNotNull ? categoryResult.results.get(0).url : null);
+                }
+            }
+        });
     }
 }
