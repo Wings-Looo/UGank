@@ -72,8 +72,6 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.5.2'
     // material 风格的 dialogs
     implementation 'com.afollestad.material-dialogs:commons:0.9.3.0'
-    // 滑动返回
-    implementation 'cn.bingoogolapple:bga-swipebacklayout:1.1.8@aar'
     // 数据库
     implementation 'org.litepal.android:core:1.5.0'
     // 美化 Toast

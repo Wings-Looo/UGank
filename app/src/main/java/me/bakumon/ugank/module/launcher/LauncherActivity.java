@@ -1,9 +1,8 @@
 package me.bakumon.ugank.module.launcher;
 
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -11,6 +10,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import me.bakumon.ugank.R;
+import me.bakumon.ugank.base.BaseActivity;
 import me.bakumon.ugank.databinding.ActivityLauncherBinding;
 import me.bakumon.ugank.module.bigimg.BigimgActivity;
 import me.bakumon.ugank.module.home.HomeActivity;
@@ -21,7 +21,7 @@ import me.bakumon.ugank.module.home.HomeActivity;
  * @author bakumon https://bakumon.me
  * @date 2016/12/8
  */
-public class LauncherActivity extends AppCompatActivity implements LauncherContract.View {
+public class LauncherActivity extends BaseActivity implements LauncherContract.View {
 
     private ActivityLauncherBinding binding;
 
@@ -38,11 +38,19 @@ public class LauncherActivity extends AppCompatActivity implements LauncherContr
     private LauncherContract.Presenter mLauncherPresenter = new LauncherPresenter(this);
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_launcher);
+    protected int getLayoutId() {
+        return R.layout.activity_launcher;
+    }
 
+    @Override
+    protected void onInit(@Nullable Bundle savedInstanceState) {
+        binding = getDataBinding();
         mLauncherPresenter.subscribe();
+    }
+
+    @Override
+    protected View[] setImmersiveView() {
+        return new View[0];
     }
 
     @Override
