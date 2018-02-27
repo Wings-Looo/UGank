@@ -6,7 +6,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorActivityBackground"
         android:orientation="vertical"
         tools:context="me.bakumon.ugank.module.favorite.FavoriteActivity">
 
@@ -20,7 +19,6 @@
                 android:id="@+id/toolbar_favorite"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@android:color/transparent"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 app:title="@string/favorite_title"

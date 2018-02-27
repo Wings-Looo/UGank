@@ -18,6 +18,7 @@
     <color name="colorSwipeRefresh6">#02A8F3</color>
 
     <color name="colorDivider">#D9DDE1</color>
+    <color name="colorBigLine">#F5F5F5</color>
     <color name="colorLine">#EEEEEE</color>
 
     <color name="colorTextSubTitle">#BDBDBD</color>

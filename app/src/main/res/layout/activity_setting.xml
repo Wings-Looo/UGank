@@ -6,7 +6,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorActivityBackground"
         android:orientation="vertical"
         tools:context="me.bakumon.ugank.module.setting.SettingActivity">
 
@@ -20,7 +19,6 @@
                 android:id="@+id/toolbar_setting"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@android:color/transparent"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 app:title="@string/setting_title"
@@ -126,7 +124,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
-                    android:background="#F5F5F5" />
+                    android:background="@color/colorBigLine" />
 
                 <LinearLayout
                     android:id="@+id/ll_is_show_launcher_img"
@@ -213,7 +211,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="8dp"
-                    android:background="#F5F5F5" />
+                    android:background="@color/colorBigLine" />
 
                 <LinearLayout
                     android:layout_width="match_parent"

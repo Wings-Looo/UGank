@@ -8,21 +8,8 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="AppTheme.Home">
-        <item name="android:windowIsTranslucent">true</item>
-    </style>
-
     <style name="AppTheme.Launcher">
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowFullscreen">true</item>
-        <item name="android:screenOrientation">portrait</item>
-    </style>
-
-    <style name="AppTheme.Transparent">
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:screenOrientation">portrait</item>
     </style>
 
     <style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">

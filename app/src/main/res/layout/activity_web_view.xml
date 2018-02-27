@@ -6,7 +6,6 @@
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorActivityBackground"
         android:orientation="vertical"
         tools:context="me.bakumon.ugank.module.webview.WebViewActivity">
 
@@ -20,7 +19,6 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@android:color/transparent"
                 app:navigationIcon="@drawable/ic_webview_finish"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
