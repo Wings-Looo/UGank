@@ -4,12 +4,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import es.dmoral.toasty.Toasty;
 import me.bakumon.ugank.R;
+import me.bakumon.ugank.ThemeManage;
 import me.bakumon.ugank.base.BaseActivity;
 import me.bakumon.ugank.databinding.ActivityBigimgBinding;
 
@@ -18,21 +21,28 @@ import me.bakumon.ugank.databinding.ActivityBigimgBinding;
  *
  * @author bakumon https://bakumon.me
  */
-public class BigimgActivity extends BaseActivity implements BigimgContract.View {
+public class BigimgActivity extends BaseActivity {
 
     public static final String MEIZI_URL = "me.bakumon.gank.module.img.BigimgActivity.meizi_url";
     public static final String MEIZI_TITLE = "me.bakumon.gank.module.img.BigimgActivity.meizi_title";
 
-    private BigimgContract.Presenter mBigimgPresenter = new BigimgPresenter(this);
-
     private ActivityBigimgBinding binding;
 
     public static void openBigimgActivity(Activity activity, String meiziUrl, String meiziTitle) {
+        if (TextUtils.isEmpty(meiziUrl)){
+            Toasty.error(activity, "图片Url为空，请重试").show();
+            return;
+        }
         Intent intent = new Intent();
         intent.setClass(activity, BigimgActivity.class);
         intent.putExtra(BigimgActivity.MEIZI_TITLE, meiziTitle);
         intent.putExtra(BigimgActivity.MEIZI_URL, meiziUrl);
         activity.startActivity(intent);
+    }
+
+    @Override
+    protected View[] setImmersiveView() {
+        return new View[]{binding.toolbarBigImg};
     }
 
     @Override
@@ -44,12 +54,9 @@ public class BigimgActivity extends BaseActivity implements BigimgContract.View 
     protected void onInit(@Nullable Bundle savedInstanceState) {
         binding = getDataBinding();
         initView();
-        mBigimgPresenter.subscribe();
-    }
-
-    @Override
-    protected View[] setImmersiveView() {
-        return new View[]{binding.toolbarBigImg};
+        setThemeColor(ThemeManage.INSTANCE.getColorPrimary());
+        loadMeiziImg(getMeiziImg());
+        setMeiziTitle(getMeiziTitle());
     }
 
     private void initView() {
@@ -70,51 +77,11 @@ public class BigimgActivity extends BaseActivity implements BigimgContract.View 
         binding.imgBig.enable();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mBigimgPresenter.unsubscribe();
-    }
-
-    @Override
-    public void setMeiziTitle(String title) {
-        binding.tvTitleBigImg.setText(title);
-    }
-
-    @Override
-    public void loadMeizuImg(String url) {
-        Picasso.with(this)
-                .load(url)
-                .into(binding.imgBig, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        // 这里可能会有内存泄露
-                        hideLoading();
-                    }
-
-                    @Override
-                    public void onError() {
-
-                    }
-                });
-    }
-
-    @Override
-    public void setToolbarBackgroundColor(int color) {
+    public void setThemeColor(int color) {
         binding.appbarBigImg.setBackgroundColor(color);
-    }
-
-    @Override
-    public void setLoadingColor(int color) {
         binding.slBigImgLoading.setSquareColor(color);
     }
 
-    @Override
-    public void showLoading() {
-        binding.slBigImgLoading.setVisibility(View.VISIBLE);
-    }
-
-    @Override
     public String getMeiziImg() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -124,7 +91,6 @@ public class BigimgActivity extends BaseActivity implements BigimgContract.View 
         }
     }
 
-    @Override
     public String getMeiziTitle() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -134,7 +100,34 @@ public class BigimgActivity extends BaseActivity implements BigimgContract.View 
         }
     }
 
-    public void hideLoading() {
-        binding.slBigImgLoading.setVisibility(View.GONE);
+    private void loadMeiziImg(String url) {
+        if (url == null) {
+            return;
+        }
+        binding.slBigImgLoading.setVisibility(View.VISIBLE);
+        loadMeizuImg(url);
+    }
+
+    private void setMeiziTitle(String title) {
+        if (title == null) {
+            return;
+        }
+        binding.tvTitleBigImg.setText("妹子:" + title);
+    }
+
+    public void loadMeizuImg(String url) {
+        Picasso.with(this)
+                .load(url)
+                .into(binding.imgBig, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        binding.slBigImgLoading.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onError() {
+                        Toasty.error(BigimgActivity.this, "图片加载失败").show();
+                    }
+                });
     }
 }

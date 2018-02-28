@@ -9,6 +9,7 @@ import android.view.View;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import me.bakumon.ugank.ConfigManage;
 import me.bakumon.ugank.R;
 import me.bakumon.ugank.base.BaseActivity;
 import me.bakumon.ugank.databinding.ActivityLauncherBinding;
@@ -21,7 +22,7 @@ import me.bakumon.ugank.module.home.HomeActivity;
  * @author bakumon https://bakumon.me
  * @date 2016/12/8
  */
-public class LauncherActivity extends BaseActivity implements LauncherContract.View {
+public class LauncherActivity extends BaseActivity {
 
     private ActivityLauncherBinding binding;
 
@@ -35,17 +36,9 @@ public class LauncherActivity extends BaseActivity implements LauncherContract.V
      */
     private boolean isResume;
 
-    private LauncherContract.Presenter mLauncherPresenter = new LauncherPresenter(this);
-
     @Override
     protected int getLayoutId() {
         return R.layout.activity_launcher;
-    }
-
-    @Override
-    protected void onInit(@Nullable Bundle savedInstanceState) {
-        binding = getDataBinding();
-        mLauncherPresenter.subscribe();
     }
 
     @Override
@@ -54,6 +47,20 @@ public class LauncherActivity extends BaseActivity implements LauncherContract.V
     }
 
     @Override
+    protected void onInit(@Nullable Bundle savedInstanceState) {
+        binding = getDataBinding();
+        if (!ConfigManage.INSTANCE.isShowLauncherImg()) {
+            goHomeActivity();
+            return;
+        }
+        String imgCacheUrl = ConfigManage.INSTANCE.getBannerURL();
+        if (!TextUtils.isEmpty(imgCacheUrl)) {
+            loadImg(imgCacheUrl);
+        } else {
+            goHomeActivity();
+        }
+    }
+
     public void loadImg(String url) {
         meiUrl = url;
         try {
@@ -85,6 +92,10 @@ public class LauncherActivity extends BaseActivity implements LauncherContract.V
         }
     }
 
+    public void goHomeActivity() {
+        HomeActivity.openHomeActivity(this);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -111,18 +122,7 @@ public class LauncherActivity extends BaseActivity implements LauncherContract.V
     }
 
     @Override
-    public void goHomeActivity() {
-        HomeActivity.openHomeActivity(this);
-    }
-
-    @Override
     public void onBackPressed() {
         // 禁掉返回键
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mLauncherPresenter.unsubscribe();
     }
 }
