@@ -2,6 +2,7 @@ package me.bakumon.ugank;
 
 import android.app.Application;
 
+import com.github.anzewei.parallaxbacklayout.ParallaxHelper;
 import com.squareup.leakcanary.LeakCanary;
 
 import org.litepal.LitePal;
@@ -28,6 +29,14 @@ public class App extends Application {
         initConfigManage();
         initLeakCanary();
         initLitePal();
+        registerParallaxBack();
+    }
+
+    /**
+     * 滑动返回
+     */
+    private void registerParallaxBack() {
+        registerActivityLifecycleCallbacks(ParallaxHelper.getInstance());
     }
 
     /**

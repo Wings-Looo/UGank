@@ -14,6 +14,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.github.anzewei.parallaxbacklayout.ParallaxBack;
 import com.google.android.flexbox.FlexboxLayoutManager;
 
 import java.util.List;
@@ -36,6 +37,7 @@ import me.bakumon.ugank.widget.RecycleViewDivider;
  *
  * @author bakumon https://bakumon.me
  */
+@ParallaxBack
 public class SearchActivity extends BaseActivity implements SearchContract.View, TextWatcher, TextView.OnEditorActionListener, View.OnClickListener, BaseQuickAdapter.OnItemChildClickListener, BaseQuickAdapter.RequestLoadMoreListener {
 
     private SearchContract.Presenter mSearchPresenter = new SearchPresenter(this);

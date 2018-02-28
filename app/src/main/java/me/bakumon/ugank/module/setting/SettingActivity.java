@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.github.anzewei.parallaxbacklayout.ParallaxBack;
 
 import es.dmoral.toasty.Toasty;
 import me.bakumon.ugank.R;
@@ -24,6 +25,7 @@ import me.bakumon.ugank.utills.MDTintUtil;
  *
  * @author bakumon https://bakumon.me
  */
+@ParallaxBack
 public class SettingActivity extends BaseActivity implements SettingContract.View, CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
     private SettingPresenter mSettingPresenter = new SettingPresenter(this);

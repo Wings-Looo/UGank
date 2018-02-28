@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.github.anzewei.parallaxbacklayout.ParallaxBack;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ import me.bakumon.ugank.widget.RecycleViewDivider;
  *
  * @author bakumon https://bakumon
  */
+@ParallaxBack
 public class FavoriteActivity extends BaseActivity implements FavoriteContract.View, BaseQuickAdapter.OnItemChildClickListener, BaseQuickAdapter.RequestLoadMoreListener {
 
     public static final int REQUEST_CODE_FAVORITE = 101;

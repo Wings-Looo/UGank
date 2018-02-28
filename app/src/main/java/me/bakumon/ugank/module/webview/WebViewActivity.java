@@ -12,6 +12,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.github.anzewei.parallaxbacklayout.ParallaxBack;
+
 import es.dmoral.toasty.Toasty;
 import me.bakumon.ugank.R;
 import me.bakumon.ugank.base.BaseActivity;
@@ -27,6 +29,7 @@ import me.bakumon.ugank.widget.ObservableWebView;
  *
  * @author bakumon https://bakumon.me
  */
+@ParallaxBack
 public class WebViewActivity extends BaseActivity implements WebViewContract.View, View.OnClickListener {
 
     private static final String GANK_URL = "me.bakumon.gank.module.webview.WebViewActivity.gank_url";

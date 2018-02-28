@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.github.anzewei.parallaxbacklayout.ParallaxBack;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -21,6 +22,7 @@ import me.bakumon.ugank.databinding.ActivityBigimgBinding;
  *
  * @author bakumon https://bakumon.me
  */
+@ParallaxBack
 public class BigimgActivity extends BaseActivity {
 
     public static final String MEIZI_URL = "me.bakumon.gank.module.img.BigimgActivity.meizi_url";
@@ -29,7 +31,7 @@ public class BigimgActivity extends BaseActivity {
     private ActivityBigimgBinding binding;
 
     public static void openBigimgActivity(Activity activity, String meiziUrl, String meiziTitle) {
-        if (TextUtils.isEmpty(meiziUrl)){
+        if (TextUtils.isEmpty(meiziUrl)) {
             Toasty.error(activity, "图片Url为空，请重试").show();
             return;
         }

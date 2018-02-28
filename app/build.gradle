@@ -92,7 +92,8 @@ dependencies {
     implementation('com.github.ihsanbal:LoggingInterceptor:2.0.4') {
         exclude group: 'org.json', module: 'json'
     }
-
+    // 滑动返回
+    implementation 'com.github.anzewei:parallaxbacklayout:1.1.9'
     // 统一支持库使用 27.0.2 版本
     configurations.all {
         resolutionStrategy.eachDependency { DependencyResolveDetails details ->
