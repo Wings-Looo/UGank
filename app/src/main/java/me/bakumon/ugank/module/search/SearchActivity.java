@@ -143,8 +143,7 @@ public class SearchActivity extends BaseActivity implements SearchContract.View,
                 }
                 if (TextUtils.equals("福利", mSearchListAdapter.getData().get(position).type)) {
                     BigimgActivity.openBigimgActivity(this,
-                            mSearchListAdapter.getData().get(position).url,
-                            mSearchListAdapter.getData().get(position).desc);
+                            mSearchListAdapter.getData().get(position).url);
                 } else {
                     Favorite favorite = new Favorite();
                     favorite.setAuthor(mSearchListAdapter.getData().get(position).who);

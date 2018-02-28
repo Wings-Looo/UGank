@@ -113,7 +113,7 @@ public class LauncherActivity extends BaseActivity {
             case R.id.img_launcher_welcome:
                 if (!TextUtils.isEmpty(meiUrl)) {
                     goHomeActivity();
-                    BigimgActivity.openBigimgActivity(this, meiUrl, "妹子");
+                    BigimgActivity.openBigimgActivity(this, false, meiUrl);
                 }
                 break;
             default:

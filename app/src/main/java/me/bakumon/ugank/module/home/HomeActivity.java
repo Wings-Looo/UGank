@@ -25,7 +25,6 @@ import me.bakumon.ugank.databinding.ActivityHomeBinding;
 import me.bakumon.ugank.module.bigimg.BigimgActivity;
 import me.bakumon.ugank.module.category.CategoryFragment;
 import me.bakumon.ugank.module.favorite.FavoriteActivity;
-import me.bakumon.ugank.module.launcher.LauncherActivity;
 import me.bakumon.ugank.module.search.SearchActivity;
 import me.bakumon.ugank.module.setting.SettingActivity;
 import me.bakumon.ugank.utills.MDTintUtil;
@@ -243,7 +242,7 @@ public class HomeActivity extends BaseActivity {
                 break;
             case R.id.iv_home_banner:
                 if (!TextUtils.isEmpty(imgUrl)) {
-                    BigimgActivity.openBigimgActivity(this, imgUrl, "妹子");
+                    BigimgActivity.openBigimgActivity(this, imgUrl);
                 }
                 break;
             default:

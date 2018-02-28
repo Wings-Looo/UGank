@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.github.anzewei.parallaxbacklayout.ParallaxBack;
+import com.github.anzewei.parallaxbacklayout.ParallaxHelper;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -26,20 +27,38 @@ import me.bakumon.ugank.databinding.ActivityBigimgBinding;
 public class BigimgActivity extends BaseActivity {
 
     public static final String MEIZI_URL = "me.bakumon.gank.module.img.BigimgActivity.meizi_url";
-    public static final String MEIZI_TITLE = "me.bakumon.gank.module.img.BigimgActivity.meizi_title";
+    public static final String IS_SUPPORT_SWIPE_BACK = "me.bakumon.gank.module.img.BigimgActivity.from";
 
     private ActivityBigimgBinding binding;
 
-    public static void openBigimgActivity(Activity activity, String meiziUrl, String meiziTitle) {
+    public static void openBigimgActivity(Activity activity, boolean isSupportSwipeBack, String meiziUrl) {
         if (TextUtils.isEmpty(meiziUrl)) {
             Toasty.error(activity, "图片Url为空，请重试").show();
             return;
         }
         Intent intent = new Intent();
         intent.setClass(activity, BigimgActivity.class);
-        intent.putExtra(BigimgActivity.MEIZI_TITLE, meiziTitle);
         intent.putExtra(BigimgActivity.MEIZI_URL, meiziUrl);
+        intent.putExtra(BigimgActivity.IS_SUPPORT_SWIPE_BACK, isSupportSwipeBack);
         activity.startActivity(intent);
+    }
+
+    public static void openBigimgActivity(Activity activity, String meiziUrl) {
+        openBigimgActivity(activity, true, meiziUrl);
+    }
+
+    public String getMeiziImg() {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            return bundle.getString(BigimgActivity.MEIZI_URL);
+        } else {
+            return null;
+        }
+    }
+
+    public boolean getFromType() {
+        Bundle bundle = getIntent().getExtras();
+        return bundle == null || bundle.getBoolean(BigimgActivity.IS_SUPPORT_SWIPE_BACK, true);
     }
 
     @Override
@@ -55,10 +74,10 @@ public class BigimgActivity extends BaseActivity {
     @Override
     protected void onInit(@Nullable Bundle savedInstanceState) {
         binding = getDataBinding();
+        ParallaxHelper.getParallaxBackLayout(this).setEnableGesture(getFromType());
         initView();
         setThemeColor(ThemeManage.INSTANCE.getColorPrimary());
         loadMeiziImg(getMeiziImg());
-        setMeiziTitle(getMeiziTitle());
     }
 
     private void initView() {
@@ -74,7 +93,6 @@ public class BigimgActivity extends BaseActivity {
                 finish();
             }
         });
-
         // photoView
         binding.imgBig.enable();
     }
@@ -84,40 +102,11 @@ public class BigimgActivity extends BaseActivity {
         binding.slBigImgLoading.setSquareColor(color);
     }
 
-    public String getMeiziImg() {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            return bundle.getString(BigimgActivity.MEIZI_URL);
-        } else {
-            return null;
-        }
-    }
-
-    public String getMeiziTitle() {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            return bundle.getString(BigimgActivity.MEIZI_TITLE);
-        } else {
-            return null;
-        }
-    }
-
     private void loadMeiziImg(String url) {
         if (url == null) {
             return;
         }
         binding.slBigImgLoading.setVisibility(View.VISIBLE);
-        loadMeizuImg(url);
-    }
-
-    private void setMeiziTitle(String title) {
-        if (title == null) {
-            return;
-        }
-        binding.tvTitleBigImg.setText("妹子:" + title);
-    }
-
-    public void loadMeizuImg(String url) {
         Picasso.with(this)
                 .load(url)
                 .into(binding.imgBig, new Callback() {
