@@ -9,7 +9,10 @@
     </style>
 
     <style name="AppTheme.Launcher">
-        <item name="android:windowFullscreen">true</item>
+        <!-- 避免启动白屏，打开的一瞬间 activity 透明 -->
+        <!-- 一下两个设置缺一不可 -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">
