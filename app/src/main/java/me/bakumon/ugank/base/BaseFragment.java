@@ -18,6 +18,9 @@ import me.bakumon.ugank.R;
 
 /**
  * 1.ViewDataBinding 封装
+ * 2.数据懒加载：配合 ViewPager 时，需要 ViewPager#setOffscreenPageLimit 为最大
+ * https://github.com/Lesincs/LazyInitFrag-Demo/
+ * https://juejin.im/post/5a9398b56fb9a0634e6cb19a
  *
  * @author Bakumon
  * @date 2018/1/17
@@ -25,6 +28,18 @@ import me.bakumon.ugank.R;
 
 public abstract class BaseFragment extends Fragment {
 
+    /**
+     * 标志位 判断数据是否初始化
+     */
+    private boolean isInitData = false;
+    /**
+     * 标志位 判断fragment是否可见
+     */
+    private boolean isVisibleToUser = false;
+    /**
+     * 标志位 判断view已经加载完成 避免空指针操作
+     */
+    private boolean isPrepareView = false;
     private ViewDataBinding dataBinding;
 
     @Nullable
@@ -61,6 +76,40 @@ public abstract class BaseFragment extends Fragment {
     protected <T extends ViewDataBinding> T getDataBinding() {
         return (T) dataBinding;
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        isPrepareView = true;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        initData();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        this.isVisibleToUser = isVisibleToUser;
+        initData();
+    }
+
+    /**
+     * 懒加载方法
+     */
+    private void initData() {
+        if (!isInitData && isVisibleToUser && isPrepareView) {
+            isInitData = true;
+            lazyInitData();
+        }
+    }
+
+    /**
+     * 加载数据的方法,由子类实现
+     */
+    protected abstract void lazyInitData();
 
     /**
      * 获取 StatusLayoutManager

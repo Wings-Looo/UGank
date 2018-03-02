@@ -90,8 +90,7 @@ public class CategoryFragment extends BaseFragment implements SwipeRefreshLayout
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    protected void lazyInitData() {
         getRefreshData(false);
     }
 

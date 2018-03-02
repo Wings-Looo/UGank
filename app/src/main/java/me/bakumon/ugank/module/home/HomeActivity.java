@@ -140,6 +140,8 @@ public class HomeActivity extends BaseActivity {
 
         binding.vpHomeCategory.setAdapter(infoPagerAdapter);
         binding.tabHomeCategory.setupWithViewPager(binding.vpHomeCategory);
+        // 配合 fragment 数据懒加载
+        binding.vpHomeCategory.setOffscreenPageLimit(5);
         binding.vpHomeCategory.setCurrentItem(1);
     }
 
