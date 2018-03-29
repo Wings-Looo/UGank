@@ -93,8 +93,6 @@ public class BigimgActivity extends BaseActivity {
                 finish();
             }
         });
-        // photoView
-        binding.imgBig.enable();
     }
 
     public void setThemeColor(int color) {

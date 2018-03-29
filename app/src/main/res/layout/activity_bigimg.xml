@@ -48,7 +48,7 @@
             app:xCount="4"
             app:yCount="3" />
 
-        <com.bm.library.PhotoView
+        <com.github.chrisbanes.photoview.PhotoView
             android:id="@+id/img_big"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
